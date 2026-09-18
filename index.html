@@ -1986,6 +1986,18 @@ function svgClock(
   );
 
 
+  const totalMinutes =
+    list.reduce(
+      (s,x)=>
+        s+
+        dur(
+          mins(x.start),
+          mins(x.end)
+        ),
+      0
+    );
+
+
   const polar =
     (m,r=R)=>{
 
@@ -2012,108 +2024,10 @@ function svgClock(
     };
 
 
-  const arc =
-    (
-      s,
-      e,
-      r1=inner,
-      r2=R
-    )=>{
-
-      let a =
-        s;
-
-      let b =
-        e;
+  // 以下は既存のarc処理
 
 
-      if(
-        b<=a
-      ){
-
-        b+=1440;
-
-      }
-
-
-      const span =
-        b-a;
-
-
-      const large =
-        span>720
-          ? 1
-          : 0;
-
-
-      const p1 =
-        polar(
-          a%1440,
-          r2
-        );
-
-      const p2 =
-        polar(
-          b%1440,
-          r2
-        );
-
-      const q2 =
-        polar(
-          b%1440,
-          r1
-        );
-
-      const q1 =
-        polar(
-          a%1440,
-          r1
-        );
-
-
-      const record =
-        list.find(
-          x=>
-            mins(x.start)
-            ===
-            a%1440
-        );
-
-
-      const category =
-        record
-          ? record.category
-          : null;
-
-
-      return `
-
-        <path
-          d="
-            M ${p1}
-            A ${r2} ${r2}
-              0 ${large} 1 ${p2}
-            L ${q2}
-            A ${r1} ${r1}
-              0 ${large} 0 ${q1}
-            Z
-          "
-          fill="${
-            palette[category]
-            ||
-            "#d1d5db"
-          }"
-          opacity=".86"
-        />
-
-      `;
-
-    };
-
-
-  let parts=[];
-
-
+  // 24時間の目盛線
   for(
     let i=0;
     i<24;
@@ -2153,20 +2067,7 @@ function svgClock(
   }
 
 
-  for(
-    const x of list
-  ){
-
-    parts.push(
-      arc(
-        mins(x.start),
-        mins(x.end)
-      )
-    );
-
-  }
-
-
+  // 3時間ごとの時間表示
   for(
     let i=0;
     i<24;
@@ -2176,7 +2077,7 @@ function svgClock(
     const p =
       polar(
         i*60,
-        inner-16
+        R+22
       );
 
 
@@ -2185,15 +2086,23 @@ function svgClock(
       <text
         x="${p[0]}"
         y="${p[1]+4}"
-        text-anchor="middle">
+        text-anchor="middle"
+        style="
+          font-size:13px;
+          fill:#374151;
+          font-weight:650;
+        ">
 
-        ${i}
+        ${i}:00
 
       </text>
 
     `);
 
   }
+
+
+  // 以下は既存のarc描画
 
 
   return `
@@ -2240,19 +2149,7 @@ function svgClock(
         y="${c+17}"
         text-anchor="middle">
 
-        ${
-          list.reduce(
-            (s,x)=>
-              s+
-              dur(
-                mins(x.start),
-                mins(x.end)
-              ),
-            0
-          )===1440
-            ? "24:00"
-            : "記録"
-        }
+        ${fmtDur(totalMinutes)}
 
       </text>
 
@@ -2261,29 +2158,6 @@ function svgClock(
   `;
 
 }
-
-
-function renderClock(){
-
-  document.getElementById(
-    "homeClock"
-  ).innerHTML =
-    svgClock(
-      db.days[selectedDate]?.[
-        homeMode
-      ] || []
-    );
-
-
-  document.getElementById(
-    "recordClock"
-  ).innerHTML =
-    svgClock(
-      records(mode)
-    );
-
-}
-
 
 /* =========================
    タイムライン
