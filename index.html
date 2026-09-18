@@ -157,14 +157,13 @@ main{
 .clockwrap{
   display:flex;
   justify-content:center;
-  padding:8px 0
+  padding:20px 0 8px
 }
 
 .clock{
   width:min(88vw,360px);
   aspect-ratio:1;
   position:relative;
-  touch-action:none;
   user-select:none
 }
 
@@ -191,30 +190,63 @@ main{
   margin-top:2px
 }
 
-/* カテゴリ凡例 */
-.legend{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:7px 10px;
-  margin-top:12px;
-  padding-top:10px;
-  border-top:1px solid var(--line)
+/* 時刻入力 */
+
+.time-editor{
+  margin-top:16px;
+  padding:12px;
+  background:#f8fafc;
+  border:1px solid var(--line);
+  border-radius:14px
 }
 
-.legend-item{
-  display:flex;
-  align-items:center;
-  gap:5px;
-  font-size:11px;
-  color:#374151
+.time-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px
 }
 
-.legend-color{
-  width:11px;
-  height:11px;
-  border-radius:3px;
-  flex:none
+.time-field{
+  display:flex;
+  flex-direction:column;
+  gap:5px
+}
+
+.time-field label{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:650
+}
+
+.time-field input{
+  width:100%;
+  height:44px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:white;
+  padding:0 10px;
+  font-size:17px;
+  font-weight:600
+}
+
+.time-buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:9px
+}
+
+.time-buttons button{
+  height:40px;
+  border:1px solid var(--line);
+  background:white;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:650
+}
+
+.record-action{
+  margin-top:9px
 }
 
 .actions{
@@ -322,6 +354,38 @@ main{
   background:#f3f4f6;
   border-radius:999px;
   padding:5px 8px
+}
+
+/* 凡例 */
+
+.legend{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:7px 12px;
+  margin-top:10px;
+  padding-top:10px;
+  border-top:1px solid var(--line)
+}
+
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:12px;
+  min-width:0
+}
+
+.legend-color{
+  width:13px;
+  height:13px;
+  border-radius:4px;
+  flex:none
+}
+
+.legend-name{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap
 }
 
 .bottom{
@@ -453,6 +517,16 @@ input[type=text]{
   color:var(--muted);
   line-height:1.6
 }
+
+@media(max-width:380px){
+  .legend{
+    grid-template-columns:1fr
+  }
+
+  .time-row{
+    grid-template-columns:1fr 1fr
+  }
+}
 </style>
 </head>
 
@@ -473,7 +547,7 @@ input[type=text]{
 
 <main>
 
-<!-- ==================== HOME ==================== -->
+<!-- ホーム -->
 
 <section id="home" class="screen active">
 
@@ -493,32 +567,22 @@ input[type=text]{
       <div id="homeClock" class="clock"></div>
     </div>
 
-    <div class="hint">
-      選択日の24時間を可視化
-    </div>
-
     <div id="homeLegend" class="legend"></div>
+
+    <div class="hint">選択日の24時間を可視化</div>
 
   </div>
 
   <div class="card">
-
     <b>タイムライン</b>
-
-    <div
-      id="homeTimeline"
-      class="timeline"
-      style="margin-top:10px">
-    </div>
-
+    <div id="homeTimeline" class="timeline" style="margin-top:10px"></div>
     <div id="homeSummary" class="sum"></div>
-
   </div>
 
 </section>
 
 
-<!-- ==================== RECORD ==================== -->
+<!-- 記録 -->
 
 <section id="record" class="screen">
 
@@ -526,73 +590,85 @@ input[type=text]{
 
     <div class="status">
       <b>記録</b>
-      <span id="recordStatus" class="pill">
-        予定：未確定　行動：未確定
-      </span>
+      <span id="recordStatus" class="pill">予定：未確定　行動：未確定</span>
     </div>
 
     <div class="switch">
-      <button id="recSchedule" class="active">
-        予定
-      </button>
-
-      <button id="recActivity">
-        行動
-      </button>
+      <button id="recSchedule" class="active">予定</button>
+      <button id="recActivity">行動</button>
     </div>
+
+
+    <!-- 円グラフ -->
 
     <div class="clockwrap">
       <div id="recordClock" class="clock"></div>
     </div>
 
-    <div class="hint">
-      円周上をドラッグして時間帯を指定 → カテゴリを選択
-    </div>
-
     <div id="recordLegend" class="legend"></div>
 
-    <div class="actions">
 
-      <button
-        class="secondary"
-        id="nowBtn">
-        現在時刻から記録
-      </button>
+    <!-- 時刻入力 -->
 
-      <button
-        class="secondary"
-        id="nowEndBtn">
-        現在時刻を終了時間にする
-      </button>
+    <div class="time-editor">
+
+      <div class="time-row">
+
+        <div class="time-field">
+          <label for="startTime">開始時間</label>
+          <input id="startTime" type="time" step="60">
+        </div>
+
+        <div class="time-field">
+          <label for="endTime">終了時間</label>
+          <input id="endTime" type="time" step="60">
+        </div>
+
+      </div>
+
+      <div class="time-buttons">
+
+        <button id="setStartNow">
+          現在時刻を開始時間に設定
+        </button>
+
+        <button id="setEndNow">
+          現在時刻を終了時間に設定
+        </button>
+
+      </div>
+
+      <div class="record-action">
+        <button class="primary" id="selectCategoryBtn">
+          この時間を記録
+        </button>
+      </div>
 
     </div>
 
-    <div class="actions">
 
-      <button
-        class="secondary"
-        id="clearBtn">
+    <div class="actions">
+      <button class="secondary" id="nowBtn">
+        現在時刻から30分記録
+      </button>
+
+      <button class="secondary" id="clearBtn">
         編集中をクリア
       </button>
-
     </div>
+
 
     <div id="validation"></div>
 
-    <div class="actions">
 
-      <button
-        class="primary"
-        id="confirmBtn">
+    <div class="actions">
+      <button class="primary" id="confirmBtn">
         予定を確定
       </button>
 
-      <button
-        class="secondary"
-        id="reviseBtn">
+      <button class="secondary" id="reviseBtn">
         修正
       </button>
-
     </div>
 
   </div>
@@ -602,18 +678,14 @@ input[type=text]{
 
     <b>現在の入力</b>
 
-    <div
-      id="recordTimeline"
-      class="timeline"
-      style="margin-top:10px">
-    </div>
+    <div id="recordTimeline" class="timeline" style="margin-top:10px"></div>
 
   </div>
 
 </section>
 
 
-<!-- ==================== DATA ==================== -->
+<!-- データ -->
 
 <section id="data" class="screen">
 
@@ -627,35 +699,13 @@ input[type=text]{
     </p>
 
     <div class="actions">
-
-      <button
-        class="primary"
-        id="exportSchedule">
-        予定MD
-      </button>
-
-      <button
-        class="primary"
-        id="exportActivity">
-        行動MD
-      </button>
-
+      <button class="primary" id="exportSchedule">予定MD</button>
+      <button class="primary" id="exportActivity">行動MD</button>
     </div>
 
     <div class="actions">
-
-      <button
-        class="secondary"
-        id="exportJson">
-        JSONバックアップ
-      </button>
-
-      <button
-        class="secondary"
-        id="copyMd">
-        Markdownをコピー
-      </button>
-
+      <button class="secondary" id="exportJson">JSONバックアップ</button>
+      <button class="secondary" id="copyMd">Markdownをコピー</button>
     </div>
 
     <div id="exportMsg"></div>
@@ -667,35 +717,17 @@ input[type=text]{
 
     <b>カテゴリ管理</b>
 
-    <div
-      class="help"
-      style="margin:6px 0 10px">
-
+    <div class="help" style="margin:6px 0 10px">
       睡眠・食事・入浴は固定カテゴリです．
       その他は自由に追加できます．
-
     </div>
 
     <div class="actions">
-
-      <input
-        id="newCat"
-        type="text"
-        placeholder="カテゴリ名">
-
-      <button
-        class="primary"
-        id="addCat">
-        カテゴリ追加
-      </button>
-
+      <input id="newCat" type="text" placeholder="カテゴリ名">
+      <button class="primary" id="addCat">カテゴリ追加</button>
     </div>
 
-    <div
-      id="catList"
-      class="list"
-      style="margin-top:10px">
-    </div>
+    <div id="catList" class="list" style="margin-top:10px"></div>
 
   </div>
 
@@ -704,55 +736,44 @@ input[type=text]{
 </main>
 
 
-<!-- ==================== BOTTOM NAV ==================== -->
+<!-- 下部ナビ -->
 
 <nav class="bottom">
 
-  <button
-    class="active"
-    data-screen="home">
-
+  <button class="active" data-screen="home">
     <span class="ico">⌂</span>
     ホーム
-
   </button>
 
   <button data-screen="record">
-
     <span class="ico">＋</span>
     記録
-
   </button>
 
   <button data-screen="data">
-
     <span class="ico">☷</span>
     データ
-
   </button>
 
 </nav>
 
 
-<!-- ==================== CATEGORY MODAL ==================== -->
+<!-- カテゴリ選択モーダル -->
 
 <div id="modal" class="modal">
 
   <div class="sheet">
 
-    <h3 id="modalTitle">
-      カテゴリを選択
-    </h3>
+    <h3 id="modalTitle">カテゴリを選択</h3>
 
     <div id="catPick" class="catpick"></div>
 
     <button
       class="secondary"
       id="modalCancel"
-      style="margin-top:10px">
-
+      style="margin-top:10px"
+    >
       キャンセル
-
     </button>
 
   </div>
@@ -764,181 +785,97 @@ input[type=text]{
 
 <script>
 
-/* =========================================================
-   基本設定
-========================================================= */
-
-const FIXED = [
+const FIXED=[
   "睡眠",
   "食事",
   "入浴"
 ];
 
-const KEY = "activity_logger_v1";
+let db=JSON.parse(
+  localStorage.getItem("activity_logger_v1")||"null"
+)||{
+  categories:[
+    ...FIXED,
+    "研究",
+    "就活",
+    "大学",
+    "趣味",
+    "運動",
+    "移動",
+    "休憩",
+    "家事",
+    "バイト",
+    "その他"
+  ],
+  days:{}
+};
+
+const KEY="activity_logger_v1";
+
+let dateEl=document.getElementById("date");
+
+let selectedDate=
+  new Date().toISOString().slice(0,10);
+
+dateEl.value=selectedDate;
+
+let mode="schedule";
+let homeMode="schedule";
+let pending=null;
 
 
-let db =
-  JSON.parse(
-    localStorage.getItem(KEY) || "null"
-  )
-  ||
-  {
-    categories:[
-      ...FIXED,
-      "研究",
-      "就活",
-      "大学",
-      "趣味",
-      "運動",
-      "移動",
-      "休憩",
-      "家事",
-      "バイト",
-      "その他"
-    ],
-    days:{}
-  };
-
-
-let dateEl =
-  document.getElementById("date");
-
-
-let selectedDate =
-  new Date()
-    .toISOString()
-    .slice(0,10);
-
-
-dateEl.value =
-  selectedDate;
-
-
-let mode =
-  "schedule";
-
-
-let homeMode =
-  "schedule";
-
-
-let pending =
-  null;
-
-
-/* =========================================================
-   カテゴリカラー
-========================================================= */
-
-function categoryColor(category){
-
-  const index =
-    db.categories.indexOf(category);
-
-  if(index < 0){
-    return "#d1d5db";
-  }
-
-  return `hsl(${(index * 47) % 360} 62% 58%)`;
-}
-
-
-/* =========================================================
-   保存
-========================================================= */
+/* =========================
+   基本処理
+========================= */
 
 function save(){
-
-  localStorage.setItem(
-    KEY,
-    JSON.stringify(db)
-  );
-
+  localStorage.setItem(KEY,JSON.stringify(db));
 }
-
-
-/* =========================================================
-   日付データ
-========================================================= */
 
 function day(){
 
   if(!db.days[selectedDate]){
 
-    db.days[selectedDate] = {
-
+    db.days[selectedDate]={
       schedule:[],
       activity:[],
-
       confirmed:{
         schedule:false,
         activity:false
       },
-
       md:{
         schedule:"",
         activity:""
       }
-
     };
 
   }
 
   return db.days[selectedDate];
-
 }
-
-
-/* =========================================================
-   時間関連
-========================================================= */
 
 function mins(t){
 
-  let [h,m] =
-    t.split(":").map(Number);
+  let [h,m]=t.split(":").map(Number);
 
-  return h * 60 + m;
-
+  return h*60+m;
 }
-
 
 function hh(m){
 
-  m =
-    ((m % 1440) + 1440) % 1440;
+  m=((m%1440)+1440)%1440;
 
-  return (
-    String(
-      Math.floor(m / 60)
-    ).padStart(2,"0")
-    +
-    ":"
-    +
-    String(m % 60).padStart(2,"0")
-  );
-
+  return String(Math.floor(m/60)).padStart(2,"0")
+    +":"
+    +String(m%60).padStart(2,"0");
 }
-
 
 function dur(a,b){
 
-  return b >= a
-    ? b - a
-    : 1440 - a + b;
-
+  return b>=a
+    ? b-a
+    : 1440-a+b;
 }
-
-
-function fmtDur(x){
-
-  return (
-    `${Math.floor(x / 60)}:` +
-    `${String(x % 60).padStart(2,"0")}`
-  );
-
-}
-
 
 function esc(s){
 
@@ -946,121 +883,92 @@ function esc(s){
     .replaceAll("&","&amp;")
     .replaceAll("<","&lt;")
     .replaceAll(">","&gt;");
-
 }
 
+function fmtDur(x){
+
+  return `${Math.floor(x/60)}:${String(x%60).padStart(2,"0")}`;
+}
 
 function records(which=mode){
 
-  return day()[which] || [];
-
+  return day()[which]||[];
 }
 
 
-/* =========================================================
+/* =========================
    バリデーション
-========================================================= */
+========================= */
 
 function validate(which=mode){
 
-  let r =
-    records(which);
+  let r=records(which);
+  let total=0;
 
-  let total = 0;
-
-  r.forEach(
-    x =>
-      total +=
-        dur(
-          mins(x.start),
-          mins(x.end)
-        )
-  );
-
-  let missing =
-    1440 - total;
-
-
-  let el =
-    document.getElementById(
-      "validation"
+  r.forEach(x=>{
+    total+=dur(
+      mins(x.start),
+      mins(x.end)
     );
+  });
 
+  let missing=1440-total;
 
-  el.innerHTML =
-    missing > 0
+  let el=document.getElementById("validation");
 
-      ?
-
-      `<div class="error">
+  el.innerHTML=
+    missing>0
+    ? `<div class="error">
         ⚠ 未記録時間があります：
         ${fmtDur(missing)}
-        （${fmtDur(total)}/24:00）
-      </div>`
-
-      :
-
-      `<div class="success">
+        （${total}/24:00）
+       </div>`
+    : `<div class="success">
         24時間すべて記録されています．
-      </div>`;
-
+       </div>`;
 
   return {
     total,
     missing
   };
-
 }
 
 
-/* =========================================================
-   重複チェック
-========================================================= */
+/* =========================
+   重複判定
+========================= */
 
 function overlaps(list,s,e){
 
-  const a =
-    mins(s);
-
-  const b =
-    mins(e);
-
+  const a=mins(s);
+  const b=mins(e);
 
   return list.some(x=>{
 
-    const xs =
-      mins(x.start);
+    const xs=mins(x.start);
+    const xe=mins(x.end);
 
-    const xe =
-      mins(x.end);
+    if(b>a){
 
+      return xs<b && xe>a;
 
-    if(b > a){
+    }else{
 
       return (
-        xs < b &&
-        xe > a
+        (xs<1440&&xe>a) ||
+        (xs<b&&xe>0) ||
+        (xs===0&&xe===1440)
       );
 
     }
 
-
-    return (
-      (xs < 1440 && xe > a)
-      ||
-      (xs < b && xe > 0)
-      ||
-      (xs === 0 && xe === 1440)
-    );
-
   });
-
 }
 
 
-/* =========================================================
+/* =========================
    記録追加
-========================================================= */
+========================= */
 
 function addRecord(
   start,
@@ -1069,7 +977,7 @@ function addRecord(
   which=mode
 ){
 
-  if(start === end){
+  if(start===end){
 
     alert(
       "開始時刻と終了時刻が同じです．"
@@ -1079,20 +987,12 @@ function addRecord(
 
   }
 
-
-  let list =
-    records(which);
-
+  let list=records(which);
 
   if(
-    overlaps(
-      list,
-      start,
-      end
-    )
-    &&
+    overlaps(list,start,end) &&
     !confirm(
-      "既存の記録と重複しています．" +
+      "既存の記録と重複しています．\n"+
       "重複部分は上書きされますがよろしいですか？"
     )
   ){
@@ -1102,63 +1002,37 @@ function addRecord(
   }
 
 
-  let ns =
-    mins(start);
+  let ns=mins(start);
+  let ne=mins(end);
 
-  let ne =
-    mins(end);
+  let intervals=
+    ne>ns
+    ? [[ns,ne]]
+    : [[ns,1440],[0,ne]];
 
-
-  let intervals =
-    ne > ns
-
-      ? [[ns,ne]]
-
-      : [
-          [ns,1440],
-          [0,ne]
-        ];
-
-
-  let out = [];
+  let out=[];
 
 
   for(const x of list){
 
-    let xs =
-      mins(x.start);
+    let xs=mins(x.start);
+    let xe=mins(x.end);
 
-    let xe =
-      mins(x.end);
+    let xints=
+      xe>xs
+      ? [[xs,xe]]
+      : [[xs,1440],[0,xe]];
 
+    for(const [xa,xb] of xints){
 
-    let xints =
-      xe > xs
-
-        ? [[xs,xe]]
-
-        : [
-            [xs,1440],
-            [0,xe]
-          ];
-
-
-    for(
-      const [xa,xb]
-      of xints
-    ){
-
-      let pieces =
-        [[xa,xb]];
-
+      let pieces=[[xa,xb]];
 
       for(
         const [oa,ob]
         of intervals
       ){
 
-        let next = [];
-
+        let next=[];
 
         for(
           const [pa,pb]
@@ -1166,59 +1040,39 @@ function addRecord(
         ){
 
           if(
-            pb <= oa ||
-            pa >= ob
+            pb<=oa ||
+            pa>=ob
           ){
 
-            next.push(
-              [pa,pb]
-            );
+            next.push([pa,pb]);
 
-          }
+          }else{
 
-          else{
+            if(pa<oa)
+              next.push([pa,oa]);
 
-            if(pa < oa){
-
-              next.push(
-                [pa,oa]
-              );
-
-            }
-
-
-            if(pb > ob){
-
-              next.push(
-                [ob,pb]
-              );
-
-            }
+            if(pb>ob)
+              next.push([ob,pb]);
 
           }
 
         }
 
-
-        pieces =
-          next;
+        pieces=next;
 
       }
-
 
       for(
         const [pa,pb]
         of pieces
       ){
 
-        if(pb > pa){
+        if(pb>pa){
 
           out.push({
-
             start:hh(pa),
             end:hh(pb),
             category:x.category
-
           });
 
         }
@@ -1235,14 +1089,12 @@ function addRecord(
     of intervals
   ){
 
-    if(b > a){
+    if(b>a){
 
       out.push({
-
         start:hh(a),
         end:hh(b),
         category
-
       });
 
     }
@@ -1252,230 +1104,154 @@ function addRecord(
 
   out.sort(
     (a,b)=>
-      mins(a.start)
-      -
-      mins(b.start)
+      mins(a.start)-mins(b.start)
   );
 
-
-  day()[which] =
-    out;
-
+  day()[which]=out;
 
   save();
+
   render();
 
 }
 
 
-/* =========================================================
+/* =========================
+   色
+========================= */
+
+function getPalette(){
+
+  const palette={};
+
+  db.categories.forEach(
+    (x,i)=>{
+      palette[x]=
+        `hsl(${(i*47)%360} 62% 58%)`;
+    }
+  );
+
+  return palette;
+}
+
+
+/* =========================
    円グラフ
-========================================================= */
+========================= */
 
 function svgClock(list){
 
-  const size =
-    340;
+  const size=340;
+  const c=170;
+  const R=150;
+  const inner=112;
 
-  const c =
-    170;
+  const palette=getPalette();
 
-  const R =
-    150;
+  const polar=(m,r=R)=>{
 
-  const inner =
-    112;
+    let ang=
+      (m/1440)*Math.PI*2
+      -Math.PI/2;
 
+    return [
+      c+r*Math.cos(ang),
+      c+r*Math.sin(ang)
+    ];
 
-  const polar =
-    (m,r=R)=>{
-
-      let ang =
-        (m / 1440)
-        *
-        Math.PI * 2
-        -
-        Math.PI / 2;
+  };
 
 
-      return [
+  const arc=(
+    s,
+    e,
+    r1=inner,
+    r2=R
+  )=>{
 
-        c +
-        r *
-        Math.cos(ang),
+    let a=s;
+    let b=e;
 
-        c +
-        r *
-        Math.sin(ang)
+    if(b<=a)
+      b+=1440;
 
-      ];
+    let span=b-a;
 
-    };
+    let large=
+      span>720
+      ? 1
+      : 0;
 
+    let p1=
+      polar(a%1440,r2);
 
-  const arc =
-    (
-      s,
-      e,
-      r1=inner,
-      r2=R
-    )=>{
+    let p2=
+      polar(b%1440,r2);
 
-      let a =
-        s;
+    let q2=
+      polar(b%1440,r1);
 
-      let b =
-        e;
+    let q1=
+      polar(a%1440,r1);
 
-
-      if(b <= a){
-
-        b += 1440;
-
-      }
-
-
-      let span =
-        b - a;
-
-
-      let large =
-        span > 720
-          ? 1
-          : 0;
-
-
-      let p1 =
-        polar(
-          a % 1440,
-          r2
-        );
-
-
-      let p2 =
-        polar(
-          b % 1440,
-          r2
-        );
-
-
-      let q2 =
-        polar(
-          b % 1440,
-          r1
-        );
-
-
-      let q1 =
-        polar(
-          a % 1440,
-          r1
-        );
-
-
-      let rec =
-        list.find(
-          x =>
-            mins(x.start)
-            ===
-            a % 1440
-        );
-
-
-      let color =
-        rec
-          ? categoryColor(
-              rec.category
-            )
-          : "#d1d5db";
-
-
-      return `
-
-        <path
-
-          d="
-            M ${p1[0]} ${p1[1]}
-
-            A ${r2} ${r2}
-              0 ${large} 1
-              ${p2[0]} ${p2[1]}
-
-            L ${q2[0]} ${q2[1]}
-
-            A ${r1} ${r1}
-              0 ${large} 0
-              ${q1[0]} ${q1[1]}
-
-            Z
-          "
-
-          fill="${color}"
-          opacity=".86"
-
-        />
-
-      `;
-
-    };
-
-
-  let parts = [];
-
-
-  /* 1時間ごとの目盛線 */
-
-  for(
-    let i=0;
-    i<24;
-    i++
-  ){
-
-    let p =
-      polar(
-        i * 60,
-        R + 1
+    let rec=
+      list.find(
+        x=>
+          mins(x.start)===a%1440
       );
 
+    let category=
+      rec
+      ? rec.category
+      : null;
 
-    let q =
-      polar(
-        i * 60,
-        R + 10
-      );
+    return `
+      <path
+        d="
+          M ${p1[0]} ${p1[1]}
+          A ${r2} ${r2} 0 ${large} 1 ${p2[0]} ${p2[1]}
+          L ${q2[0]} ${q2[1]}
+          A ${r1} ${r1} 0 ${large} 0 ${q1[0]} ${q1[1]}
+          Z
+        "
+        fill="${palette[category]||"#d1d5db"}"
+        opacity=".86"
+      />
+    `;
 
+  };
+
+
+  let parts=[];
+
+
+  /* 24時間目盛 */
+
+  for(let i=0;i<24;i++){
+
+    let p=
+      polar(i*60,R+1);
+
+    let q=
+      polar(i*60,R+10);
 
     parts.push(`
-
       <line
-
         x1="${p[0]}"
         y1="${p[1]}"
-
         x2="${q[0]}"
         y2="${q[1]}"
-
         stroke="#9ca3af"
-
-        stroke-width="${
-          i % 6 === 0
-            ? 2
-            : 1
-        }"
-
+        stroke-width="${i%6===0?2:1}"
       />
-
     `);
 
   }
 
 
-  /* 記録済み時間 */
+  /* 記録 */
 
-  for(
-    const x
-    of list
-  ){
+  for(const x of list){
 
     parts.push(
       arc(
@@ -1487,63 +1263,30 @@ function svgClock(list){
   }
 
 
-  /* 3時間ごとの時間表示 */
+  /* 時間表示 */
 
-  for(
-    let i=0;
-    i<24;
-    i+=3
-  ){
+  for(let i=0;i<24;i+=3){
 
-    let p =
+    let p=
       polar(
-        i * 60,
-        R + 22
+        i*60,
+        inner-16
       );
 
-
     parts.push(`
-
       <text
-
         x="${p[0]}"
-        y="${p[1] + 4}"
-
+        y="${p[1]+4}"
         text-anchor="middle"
-
-        style="
-          font-size:13px;
-          fill:#374151;
-          font-weight:650;
-        "
-
       >
-
-        ${i}:00
-
+        ${i}
       </text>
-
     `);
 
   }
 
 
-  /* 合計時間 */
-
-  let totalMinutes =
-    list.reduce(
-      (s,x)=>
-        s +
-        dur(
-          mins(x.start),
-          mins(x.end)
-        ),
-      0
-    );
-
-
   return `
-
     <svg
       viewBox="0 0 ${size} ${size}"
       aria-label="24時間グラフ"
@@ -1573,275 +1316,214 @@ function svgClock(list){
         style="
           font-size:20px;
           fill:#111827;
-          font-weight:700;
+          font-weight:700
         "
       >
-
-        ${selectedDate
-          .slice(5)
-          .replace("-","/")}
-
+        ${selectedDate.slice(5).replace("-","/")}
       </text>
-
 
       <text
         x="${c}"
         y="${c+17}"
         text-anchor="middle"
-        style="
-          font-size:13px;
-          fill:#6b7280;
-        "
       >
-
-        ${fmtDur(totalMinutes)}
-
+        ${
+          list.reduce(
+            (s,x)=>
+              s+dur(
+                mins(x.start),
+                mins(x.end)
+              ),
+            0
+          )===1440
+          ?"24:00"
+          :"記録"
+        }
       </text>
 
     </svg>
-
   `;
 
 }
 
 
-/* =========================================================
+/* =========================
    凡例
-========================================================= */
+========================= */
 
-function renderLegend(id){
+function legendHTML(list){
 
-  const el =
-    document.getElementById(id);
+  const palette=getPalette();
 
+  const used=[];
 
-  if(!el){
-    return;
-  }
+  list.forEach(x=>{
 
+    if(!used.includes(x.category))
+      used.push(x.category);
 
-  const used =
-    new Set(
-      records(
-        id === "homeLegend"
-          ? homeMode
-          : mode
-      )
-      .map(x=>x.category)
-    );
+  });
 
 
-  const categories =
-    db.categories.filter(
-      c =>
-        used.has(c)
-    );
+  if(!used.length)
+    return "";
 
 
-  el.innerHTML =
-    categories
-      .map(
-        c => `
+  return used.map(category=>`
 
-          <div class="legend-item">
+    <div class="legend-item">
 
-            <span
-              class="legend-color"
-              style="
-                background:${categoryColor(c)}
-              ">
-            </span>
+      <span
+        class="legend-color"
+        style="background:${palette[category]}"
+      ></span>
 
-            <span>
-              ${esc(c)}
-            </span>
+      <span class="legend-name">
+        ${esc(category)}
+      </span>
 
-          </div>
+    </div>
 
-        `
-      )
-      .join("");
-
+  `).join("");
 
 }
 
 
-/* =========================================================
-   円グラフ描画
-========================================================= */
+/* =========================
+   時計描画
+========================= */
 
 function renderClock(){
 
   document.getElementById(
     "homeClock"
-  ).innerHTML =
+  ).innerHTML=
     svgClock(
-      db.days[selectedDate]?.[
-        homeMode
-      ] || []
+      db.days[selectedDate]?.[homeMode]||[]
     );
 
 
-  const rc =
-    document.getElementById(
-      "recordClock"
-    );
-
-
-  rc.innerHTML =
+  document.getElementById(
+    "recordClock"
+  ).innerHTML=
     svgClock(
       records(mode)
     );
 
 
-  attachDrag(rc);
-
-
-  renderLegend(
+  document.getElementById(
     "homeLegend"
-  );
+  ).innerHTML=
+    legendHTML(
+      db.days[selectedDate]?.[homeMode]||[]
+    );
 
 
-  renderLegend(
+  document.getElementById(
     "recordLegend"
-  );
+  ).innerHTML=
+    legendHTML(
+      records(mode)
+    );
 
 }
 
 
-/* =========================================================
+/* =========================
    タイムライン
-========================================================= */
+========================= */
 
 function timelineHTML(list){
 
-  if(!list.length){
-
+  if(!list.length)
     return `
       <div class="small">
         まだ記録がありません．
       </div>
     `;
 
-  }
+
+  let rows=list.map(x=>{
+
+    const d=
+      dur(
+        mins(x.start),
+        mins(x.end)
+      );
+
+    const left=
+      mins(x.start)/1440*100;
+
+    const width=
+      d/1440*100;
 
 
-  let rows =
-    list
-      .map(
-        x => {
+    return `
+      <div class="row">
 
-          const d =
-            dur(
-              mins(x.start),
-              mins(x.end)
-            );
+        <div>
+          ${x.start}–${x.end}
+        </div>
 
+        <div class="bar">
 
-          const left =
-            mins(x.start)
-            /
-            1440
-            *
-            100;
+          <div
+            class="seg"
+            style="
+              left:${left}%;
+              width:${Math.max(width,.8)}%;
+              background:#dbeafe
+            "
+          >
+            ${esc(x.category)}
+          </div>
 
+        </div>
 
-          const width =
-            d
-            /
-            1440
-            *
-            100;
+        <div>
+          ${fmtDur(d)}
+        </div>
 
+      </div>
+    `;
 
-          return `
-
-            <div class="row">
-
-              <div>
-                ${x.start}–${x.end}
-              </div>
-
-              <div class="bar">
-
-                <div
-                  class="seg"
-
-                  style="
-                    left:${left}%;
-                    width:${Math.max(width,.8)}%;
-                    background:${categoryColor(x.category)};
-                  "
-                >
-
-                  ${esc(x.category)}
-
-                </div>
-
-              </div>
-
-              <div>
-                ${fmtDur(d)}
-              </div>
-
-            </div>
-
-          `;
-
-        }
-      )
-      .join("");
+  }).join("");
 
 
-  let sums = {};
+  let sums={};
+
+  list.forEach(x=>{
+
+    sums[x.category]=
+      (sums[x.category]||0)
+      +
+      dur(
+        mins(x.start),
+        mins(x.end)
+      );
+
+  });
 
 
-  list.forEach(
-    x =>
-      sums[x.category] =
-        (
-          sums[x.category]
-          ||
-          0
-        )
-        +
-        dur(
-          mins(x.start),
-          mins(x.end)
-        )
-  );
-
-
-  let sum =
+  let sum=
     Object.entries(sums)
-      .sort(
-        (a,b)=>
-          b[1]-a[1]
-      )
+      .sort((a,b)=>b[1]-a[1])
       .map(
         ([k,v])=>
-          `<span>
-            ${esc(k)}
-            ${fmtDur(v)}
-          </span>`
+          `<span>${esc(k)} ${fmtDur(v)}</span>`
       )
       .join("");
 
 
-  return (
-    rows
-    +
-    `<div class="sum">
-      ${sum}
-    </div>`
-  );
+  return rows+
+    `<div class="sum">${sum}</div>`;
 
 }
 
 
-/* =========================================================
+/* =========================
    全体描画
-========================================================= */
+========================= */
 
 function render(){
 
@@ -1850,7 +1532,7 @@ function render(){
 
   document.getElementById(
     "homeTimeline"
-  ).innerHTML =
+  ).innerHTML=
     timelineHTML(
       day()[homeMode]
     );
@@ -1858,7 +1540,7 @@ function render(){
 
   document.getElementById(
     "recordTimeline"
-  ).innerHTML =
+  ).innerHTML=
     timelineHTML(
       records(mode)
     );
@@ -1866,109 +1548,86 @@ function render(){
 
   document.getElementById(
     "homeSchedule"
-  )
-  .classList.toggle(
+  ).classList.toggle(
     "active",
-    homeMode === "schedule"
+    homeMode==="schedule"
   );
 
 
   document.getElementById(
     "homeActivity"
-  )
-  .classList.toggle(
+  ).classList.toggle(
     "active",
-    homeMode === "activity"
+    homeMode==="activity"
   );
 
 
   document.getElementById(
     "recSchedule"
-  )
-  .classList.toggle(
+  ).classList.toggle(
     "active",
-    mode === "schedule"
+    mode==="schedule"
   );
 
 
   document.getElementById(
     "recActivity"
-  )
-  .classList.toggle(
+  ).classList.toggle(
     "active",
-    mode === "activity"
+    mode==="activity"
   );
 
 
   document.getElementById(
     "confirmBtn"
-  ).textContent =
-    (
-      mode === "schedule"
-        ? "予定"
-        : "行動"
-    )
-    +
-    "を確定";
+  ).textContent=
+    (mode==="schedule"
+      ?"予定"
+      :"行動")
+    +"を確定";
 
 
-  let d =
-    day();
+  let d=day();
 
 
-  let st =
-    `予定：${
-      d.confirmed.schedule
-        ? "確定"
-        : "未確定"
-    }　行動：${
-      d.confirmed.activity
-        ? "確定"
-        : "未確定"
-    }`;
+  let st=
+    `予定：${d.confirmed.schedule?"確定":"未確定"}　`+
+    `行動：${d.confirmed.activity?"確定":"未確定"}`;
 
 
   document.getElementById(
     "recordStatus"
-  ).textContent =
-    st;
+  ).textContent=st;
 
 
   document.getElementById(
     "homeStatus"
-  ).textContent =
-    homeMode === "schedule"
-
-      ?
-
-      (
-        d.confirmed.schedule
-          ? "予定：確定"
-          : "予定：未確定"
-      )
-
-      :
-
-      (
-        d.confirmed.activity
-          ? "行動：確定"
-          : "行動：未確定"
-      );
+  ).textContent=
+    homeMode==="schedule"
+      ? (
+          d.confirmed.schedule
+          ?"予定：確定"
+          :"予定：未確定"
+        )
+      : (
+          d.confirmed.activity
+          ?"行動：確定"
+          :"行動：未確定"
+        );
 
 
   document.getElementById(
     "homeStatus"
-  ).className =
-    "pill "
-    +
+  ).className=
+    "pill "+
     (
       (
-        homeMode === "schedule"
-          ? d.confirmed.schedule
-          : d.confirmed.activity
+        homeMode==="schedule"
+        ?d.confirmed.schedule
+        :d.confirmed.activity
       )
-        ? "ok"
-        : ""
+      ?"ok"
+      :""
     );
 
 
@@ -1981,170 +1640,69 @@ function render(){
 }
 
 
-/* =========================================================
-   ドラッグ操作
-========================================================= */
+/* =========================
+   時刻入力
+========================= */
 
-function attachDrag(el){
+function currentTime(){
 
-  let start =
-    null;
+  const now=new Date();
 
-
-  const pointToMin =
-    e => {
-
-      const r =
-        el.getBoundingClientRect();
-
-
-      const x =
-        e.clientX
-        -
-        r.left
-        -
-        r.width / 2;
-
-
-      const y =
-        e.clientY
-        -
-        r.top
-        -
-        r.height / 2;
-
-
-      let a =
-        Math.atan2(y,x)
-        +
-        Math.PI / 2;
-
-
-      if(a < 0){
-
-        a +=
-          Math.PI * 2;
-
-      }
-
-
-      return (
-        Math.round(
-          (
-            a
-            /
-            (Math.PI * 2)
-            *
-            1440
-          )
-          /
-          5
-        )
-        *
-        5
-      )
-      % 1440;
-
-    };
-
-
-  el.onpointerdown =
-    e => {
-
-      if(
-        !document
-          .getElementById("record")
-          .classList
-          .contains("active")
-      ){
-
-        return;
-
-      }
-
-
-      start =
-        pointToMin(e);
-
-
-      el.setPointerCapture(
-        e.pointerId
-      );
-
-    };
-
-
-  el.onpointerup =
-    e => {
-
-      if(start === null){
-
-        return;
-
-      }
-
-
-      let end =
-        pointToMin(e);
-
-
-      if(end === start){
-
-        end =
-          (start + 30)
-          % 1440;
-
-      }
-
-
-      pending = {
-
-        start:hh(start),
-        end:hh(end)
-
-      };
-
-
-      openCats();
-
-
-      start =
-        null;
-
-    };
+  return (
+    String(now.getHours()).padStart(2,"0")
+    +":"
+    +String(now.getMinutes()).padStart(2,"0")
+  );
 
 }
 
 
-/* =========================================================
+function setStartNow(){
+
+  document.getElementById(
+    "startTime"
+  ).value=currentTime();
+
+}
+
+
+function setEndNow(){
+
+  document.getElementById(
+    "endTime"
+  ).value=currentTime();
+
+}
+
+
+function clearTimeInput(){
+
+  document.getElementById(
+    "startTime"
+  ).value="";
+
+  document.getElementById(
+    "endTime"
+  ).value="";
+
+}
+
+
+/* =========================
    カテゴリ選択
-========================================================= */
+========================= */
 
 function openCats(){
 
   document.getElementById(
     "catPick"
-  ).innerHTML =
-    db.categories
-      .map(
-        c => `
-
-          <button
-            data-cat="${esc(c)}"
-            style="
-              border-left:
-              6px solid
-              ${categoryColor(c)};
-            "
-          >
-
-            ${esc(c)}
-
-          </button>
-
-        `
-      )
-      .join("");
+  ).innerHTML=
+    db.categories.map(
+      c=>
+        `<button data-cat="${esc(c)}">
+          ${esc(c)}
+        </button>`
+    ).join("");
 
 
   document.getElementById(
@@ -2152,124 +1710,186 @@ function openCats(){
   ).classList.add("open");
 
 
-  document
-    .querySelectorAll(
-      "#catPick button"
-    )
-    .forEach(
-      b => {
+  document.querySelectorAll(
+    "#catPick button"
+  ).forEach(b=>{
 
-        b.onclick =
-          () => {
+    b.onclick=()=>{
 
-            addRecord(
-              pending.start,
-              pending.end,
-              b.dataset.cat,
-              mode
-            );
+      addRecord(
+        pending.start,
+        pending.end,
+        b.dataset.cat,
+        mode
+      );
 
+      document.getElementById(
+        "modal"
+      ).classList.remove("open");
 
-            document
-              .getElementById(
-                "modal"
-              )
-              .classList
-              .remove("open");
+      pending=null;
 
+      clearTimeInput();
 
-            pending =
-              null;
+    };
 
-          };
-
-      }
-    );
+  });
 
 }
 
 
-/* =========================================================
+/* =========================
+   時刻入力から記録
+========================= */
+
+function prepareRecord(){
+
+  const start=
+    document.getElementById(
+      "startTime"
+    ).value;
+
+  const end=
+    document.getElementById(
+      "endTime"
+    ).value;
+
+
+  if(!start || !end){
+
+    alert(
+      "開始時間と終了時間を入力してください．"
+    );
+
+    return;
+
+  }
+
+
+  if(start===end){
+
+    alert(
+      "開始時刻と終了時刻が同じです．"
+    );
+
+    return;
+
+  }
+
+
+  pending={
+    start,
+    end
+  };
+
+  openCats();
+
+}
+
+
+/* =========================
+   現在時刻から30分
+========================= */
+
+function recordFromNow(){
+
+  const start=
+    currentTime();
+
+  const end=
+    hh(
+      mins(start)+30
+    );
+
+
+  pending={
+    start,
+    end
+  };
+
+  document.getElementById(
+    "startTime"
+  ).value=start;
+
+  document.getElementById(
+    "endTime"
+  ).value=end;
+
+  openCats();
+
+}
+
+
+/* =========================
    Markdown
-========================================================= */
+========================= */
 
 function md(which){
 
-  let list =
-    day()[which];
+  let list=day()[which];
+
+  let title=
+    which==="schedule"
+      ?"Schedule"
+      :"Activity";
 
 
-  let title =
-    which === "schedule"
-      ? "Schedule"
-      : "Activity";
+  let sums={};
 
 
-  let sums = {};
+  list.forEach(x=>{
+
+    sums[x.category]=
+      (sums[x.category]||0)
+      +
+      dur(
+        mins(x.start),
+        mins(x.end)
+      );
+
+  });
 
 
-  list.forEach(
-    x =>
-      sums[x.category] =
-        (
-          sums[x.category]
-          ||
-          0
-        )
-        +
-        dur(
-          mins(x.start),
-          mins(x.end)
-        )
-  );
+  return `
+# ${title} — ${selectedDate}
 
+## Time Log
 
-  return (
+| Start | End | Duration | Category |
+|---|---|---:|---|
+`+
+    list.map(
+      x=>
+        `| ${x.start} | ${x.end} | ${fmtDur(
+          dur(
+            mins(x.start),
+            mins(x.end)
+          )
+        )} | ${x.category} |`
+    ).join("\n")
++
+`
 
-    `# ${title} — ${selectedDate}\n\n`
-    +
-    `## Time Log\n\n`
-    +
-    `| Start | End | Duration | Category |\n`
-    +
-    `|---|---|---:|---|\n`
-    +
-    list
-      .map(
-        x =>
-          `| ${x.start} | ${x.end} | ` +
-          `${fmtDur(
-            dur(
-              mins(x.start),
-              mins(x.end)
-            )
-          )} | ${x.category} |`
-      )
-      .join("\n")
-    +
-    `\n\n## Summary\n\n`
-    +
+## Summary
+
+`
++
     Object.entries(sums)
-      .sort(
-        (a,b)=>
-          b[1]-a[1]
-      )
+      .sort((a,b)=>b[1]-a[1])
       .map(
-        ([k,v]) =>
+        ([k,v])=>
           `- ${k}：${fmtDur(v)}`
       )
       .join("\n")
-    +
-    "\n"
-
-  );
++
+"\n";
 
 }
 
 
-/* =========================================================
+/* =========================
    ダウンロード
-========================================================= */
+========================= */
 
 function download(
   name,
@@ -2277,13 +1897,9 @@ function download(
   type="text/markdown"
 ){
 
-  let a =
-    document.createElement(
-      "a"
-    );
+  let a=document.createElement("a");
 
-
-  a.href =
+  a.href=
     URL.createObjectURL(
       new Blob(
         [text],
@@ -2291,153 +1907,110 @@ function download(
       )
     );
 
-
-  a.download =
-    name;
-
+  a.download=name;
 
   a.click();
 
-
   setTimeout(
-    () =>
-      URL.revokeObjectURL(
-        a.href
-      ),
+    ()=>{
+      URL.revokeObjectURL(a.href)
+    },
     1000
   );
 
 }
 
 
-/* =========================================================
+/* =========================
    カテゴリ管理
-========================================================= */
+========================= */
 
 function renderCategories(){
 
   document.getElementById(
     "catList"
-  ).innerHTML =
-    db.categories
-      .map(
-        c => `
+  ).innerHTML=
+    db.categories.map(
+      c=>
+        `<div class="item">
 
-          <div class="item">
-
-            <span>
-
-              ${esc(c)}
-
-              ${
-                FIXED.includes(c)
-
-                  ?
-
-                  '<span class="small">固定</span>'
-
-                  :
-
-                  ""
-              }
-
-            </span>
-
+          <span>
+            ${esc(c)}
             ${
               FIXED.includes(c)
-
-                ?
-
-                ""
-
-                :
-
-                `
-
-                  <button
-                    class="dangerbtn"
-                    style="
-                      width:auto;
-                      height:32px;
-                      padding:0 10px
-                    "
-                    data-del="${esc(c)}"
-                  >
-                    削除
-                  </button>
-
-                `
+              ?'<span class="small">固定</span>'
+              :""
             }
+          </span>
 
-          </div>
+          ${
+            FIXED.includes(c)
+            ?""
+            :
+            `<button
+              class="dangerbtn"
+              style="
+                width:auto;
+                height:32px;
+                padding:0 10px
+              "
+              data-del="${esc(c)}"
+            >
+              削除
+            </button>`
+          }
 
-        `
-      )
-      .join("");
-
-
-  document
-    .querySelectorAll(
-      "[data-del]"
-    )
-    .forEach(
-      b => {
-
-        b.onclick =
-          () => {
-
-            db.categories =
-              db.categories.filter(
-                c =>
-                  c !==
-                  b.dataset.del
-              );
+        </div>`
+    ).join("");
 
 
-            save();
-            render();
+  document.querySelectorAll(
+    "[data-del]"
+  ).forEach(b=>{
 
-          };
+    b.onclick=()=>{
 
-      }
-    );
+      db.categories=
+        db.categories.filter(
+          c=>c!==b.dataset.del
+        );
+
+      save();
+
+      render();
+
+    };
+
+  });
 
 }
 
 
-/* =========================================================
-   画面切り替え
-========================================================= */
+/* =========================
+   画面切替
+========================= */
 
 function switchScreen(id){
 
   document
-    .querySelectorAll(
-      ".screen"
-    )
+    .querySelectorAll(".screen")
     .forEach(
-      x =>
-        x.classList.remove(
-          "active"
-        )
+      x=>x.classList.remove("active")
     );
 
 
   document
     .getElementById(id)
-    .classList
-    .add("active");
+    .classList.add("active");
 
 
   document
-    .querySelectorAll(
-      ".bottom button"
-    )
+    .querySelectorAll(".bottom button")
     .forEach(
-      x =>
+      x=>
         x.classList.toggle(
           "active",
-          x.dataset.screen === id
+          x.dataset.screen===id
         )
     );
 
@@ -2447,692 +2020,392 @@ function switchScreen(id){
 }
 
 
-/* =========================================================
-   ナビゲーション
-========================================================= */
+/* =========================
+   イベント
+========================= */
 
 document
-  .querySelectorAll(
-    ".bottom button"
-  )
+  .querySelectorAll(".bottom button")
   .forEach(
-    b =>
-      b.onclick =
-        () =>
-          switchScreen(
-            b.dataset.screen
-          )
+    b=>
+      b.onclick=()=>
+        switchScreen(
+          b.dataset.screen
+        )
   );
 
 
-/* =========================================================
-   日付
-========================================================= */
-
 document.getElementById(
   "prev"
-).onclick =
-  () => {
+).onclick=()=>{
 
-    let d =
-      new Date(
-        selectedDate
-      );
+  let d=new Date(selectedDate);
 
+  d.setDate(
+    d.getDate()-1
+  );
 
-    d.setDate(
-      d.getDate() - 1
-    );
+  selectedDate=
+    d.toISOString().slice(0,10);
 
+  dateEl.value=selectedDate;
 
-    selectedDate =
-      d.toISOString()
-       .slice(0,10);
+  render();
 
-
-    dateEl.value =
-      selectedDate;
-
-
-    render();
-
-  };
+};
 
 
 document.getElementById(
   "next"
-).onclick =
-  () => {
+).onclick=()=>{
 
-    let d =
-      new Date(
-        selectedDate
-      );
+  let d=new Date(selectedDate);
 
+  d.setDate(
+    d.getDate()+1
+  );
 
-    d.setDate(
-      d.getDate() + 1
-    );
+  selectedDate=
+    d.toISOString().slice(0,10);
 
+  dateEl.value=selectedDate;
 
-    selectedDate =
-      d.toISOString()
-       .slice(0,10);
+  render();
 
-
-    dateEl.value =
-      selectedDate;
+};
 
 
-    render();
+dateEl.onchange=()=>{
 
-  };
+  selectedDate=
+    dateEl.value;
 
+  render();
 
-dateEl.onchange =
-  () => {
+};
 
-    selectedDate =
-      dateEl.value;
-
-
-    render();
-
-  };
-
-
-/* =========================================================
-   ホームモード
-========================================================= */
 
 document.getElementById(
   "homeSchedule"
-).onclick =
-  () => {
+).onclick=()=>{
 
-    homeMode =
-      "schedule";
+  homeMode="schedule";
 
-    render();
+  render();
 
-  };
+};
 
 
 document.getElementById(
   "homeActivity"
-).onclick =
-  () => {
+).onclick=()=>{
 
-    homeMode =
-      "activity";
+  homeMode="activity";
 
-    render();
+  render();
 
-  };
+};
 
-
-/* =========================================================
-   記録モード
-========================================================= */
 
 document.getElementById(
   "recSchedule"
-).onclick =
-  () => {
+).onclick=()=>{
 
-    mode =
-      "schedule";
+  mode="schedule";
 
-    render();
+  render();
 
-  };
+};
 
 
 document.getElementById(
   "recActivity"
-).onclick =
-  () => {
+).onclick=()=>{
 
-    mode =
-      "activity";
+  mode="activity";
 
-    render();
+  render();
 
-  };
+};
 
 
-/* =========================================================
-   モーダル
-========================================================= */
+/* 現在時刻ボタン */
 
 document.getElementById(
-  "modalCancel"
-).onclick =
-  () => {
-
-    pending =
-      null;
+  "setStartNow"
+).onclick=setStartNow;
 
 
-    document
-      .getElementById(
-        "modal"
-      )
-      .classList
-      .remove("open");
-
-  };
+document.getElementById(
+  "setEndNow"
+).onclick=setEndNow;
 
 
-/* =========================================================
-   現在時刻から記録
-========================================================= */
+/* 時刻入力から記録 */
+
+document.getElementById(
+  "selectCategoryBtn"
+).onclick=
+  prepareRecord;
+
+
+/* 現在時刻から30分 */
 
 document.getElementById(
   "nowBtn"
-).onclick =
-  () => {
+).onclick=
+  recordFromNow;
 
-    let now =
-      new Date();
 
-
-    let start =
-      now.getHours()
-      *
-      60
-      +
-      now.getMinutes();
-
-
-    let list =
-      records(mode);
-
-
-    let last =
-      list
-        .slice()
-        .sort(
-          (a,b)=>
-            mins(a.end)
-            -
-            mins(b.end)
-        )
-        .at(-1);
-
-
-    if(
-      last
-      &&
-      mins(last.end) !== start
-      &&
-      mins(last.end) > start
-    ){
-
-      start =
-        mins(last.end);
-
-    }
-
-
-    pending = {
-
-      start:hh(start),
-
-      end:hh(
-        (start + 30)
-        % 1440
-      )
-
-    };
-
-
-    openCats();
-
-  };
-
-
-/* =========================================================
-   現在時刻を終了時間にする
-========================================================= */
-
-document.getElementById(
-  "nowEndBtn"
-).onclick =
-  () => {
-
-    let now =
-      new Date();
-
-
-    let end =
-      now.getHours()
-      *
-      60
-      +
-      now.getMinutes();
-
-
-    /*
-      直前の未確定入力があれば
-      その入力の終了時間を
-      現在時刻に変更する
-
-      例：
-      10:00 → 10:30
-      ↓
-      現在時刻 10:47
-      ↓
-      10:00 → 10:47
-    */
-
-    if(pending){
-
-      let start =
-        mins(
-          pending.start
-        );
-
-
-      if(start === end){
-
-        alert(
-          "開始時刻と終了時刻が同じです．"
-        );
-
-        return;
-
-      }
-
-
-      pending.end =
-        hh(end);
-
-
-      openCats();
-
-      return;
-
-    }
-
-
-    /*
-      pendingがない場合は，
-      最後に記録されている
-      区間の終了時間を開始時間として
-      現在時刻までを新規入力する
-    */
-
-    let list =
-      records(mode);
-
-
-    if(!list.length){
-
-      alert(
-        "開始時間が設定されていません．" +
-        "先に「現在時刻から記録」または" +
-        "円グラフから時間帯を指定してください．"
-      );
-
-      return;
-
-    }
-
-
-    let sorted =
-      list
-        .slice()
-        .sort(
-          (a,b)=>
-            mins(a.end)
-            -
-            mins(b.end)
-        );
-
-
-    let last =
-      sorted.at(-1);
-
-
-    let start =
-      mins(last.end);
-
-
-    if(start === end){
-
-      alert(
-        "最後の記録の終了時刻と現在時刻が同じです．"
-      );
-
-      return;
-
-    }
-
-
-    pending = {
-
-      start:hh(start),
-      end:hh(end)
-
-    };
-
-
-    openCats();
-
-  };
-
-
-/* =========================================================
-   クリア
-========================================================= */
+/* クリア */
 
 document.getElementById(
   "clearBtn"
-).onclick =
-  () => {
+).onclick=()=>{
 
-    pending =
-      null;
+  pending=null;
 
+  day()[mode]=[];
 
-    day()[mode] =
-      [];
+  clearTimeInput();
 
+  save();
 
-    save();
-    render();
+  render();
 
-  };
+};
 
 
-/* =========================================================
-   確定
-========================================================= */
+/* モーダル */
+
+document.getElementById(
+  "modalCancel"
+).onclick=()=>{
+
+  pending=null;
+
+  document.getElementById(
+    "modal"
+  ).classList.remove("open");
+
+};
+
+
+/* 確定 */
 
 document.getElementById(
   "confirmBtn"
-).onclick =
-  () => {
+).onclick=()=>{
 
-    let v =
-      validate(mode);
+  let v=validate(mode);
 
-
-    let label =
-      mode === "schedule"
-        ? "予定"
-        : "行動";
+  let label=
+    mode==="schedule"
+      ?"予定"
+      :"行動";
 
 
-    if(
-      v.missing > 0
-      &&
-      !confirm(
-        `24時間に${fmtDur(v.missing)}` +
-        `の未記録時間があります．` +
-        `このまま${label}を確定しますか？`
-      )
-    ){
+  if(
+    v.missing>0 &&
+    !confirm(
+      `24時間に${fmtDur(v.missing)}の未記録時間があります．`+
+      `このまま${label}を確定しますか？`
+    )
+  ){
 
-      return;
+    return;
 
-    }
+  }
 
 
-    day().confirmed[mode] =
-      true;
+  day().confirmed[mode]=true;
+
+  day().md[mode]=md(mode);
+
+  save();
+
+  render();
+
+  alert(
+    `${label}を確定しました．`
+  );
+
+};
 
 
-    day().md[mode] =
-      md(mode);
-
-
-    save();
-    render();
-
-
-    alert(
-      `${label}を確定しました．`
-    );
-
-  };
-
-
-/* =========================================================
-   修正
-========================================================= */
+/* 修正 */
 
 document.getElementById(
   "reviseBtn"
-).onclick =
-  () => {
+).onclick=()=>{
 
-    let what =
-      prompt(
-        "修正するデータを入力してください：予定 / 行動",
-        mode === "schedule"
-          ? "予定"
-          : "行動"
-      );
-
-
-    if(what === "予定"){
-
-      day()
-        .confirmed
-        .schedule =
-        false;
+  let what=
+    prompt(
+      "修正するデータを入力してください：予定 / 行動",
+      mode==="schedule"
+        ?"予定"
+        :"行動"
+    );
 
 
-      mode =
-        "schedule";
+  if(what==="予定"){
 
-    }
+    day().confirmed.schedule=false;
 
-    else if(
-      what === "行動"
-    ){
+    mode="schedule";
 
-      day()
-        .confirmed
-        .activity =
-        false;
+  }
+  else if(what==="行動"){
 
+    day().confirmed.activity=false;
 
-      mode =
-        "activity";
+    mode="activity";
 
-    }
+  }
+  else{
 
-    else{
+    return;
 
-      return;
-
-    }
+  }
 
 
-    save();
-    render();
+  save();
 
-  };
+  render();
+
+};
 
 
-/* =========================================================
-   エクスポート
-========================================================= */
+/* エクスポート */
 
 document.getElementById(
   "exportSchedule"
-).onclick =
-  () => {
+).onclick=()=>{
 
-    if(
-      !day()
-        .confirmed
-        .schedule
-    ){
+  if(!day().confirmed.schedule){
 
-      alert(
-        "予定が確定されていません．"
-      );
-
-      return;
-
-    }
-
-
-    download(
-      `schedule_${selectedDate}.md`,
-      day().md.schedule
-      ||
-      md("schedule")
+    alert(
+      "予定が確定されていません．"
     );
 
-  };
+    return;
+
+  }
+
+
+  download(
+    `schedule_${selectedDate}.md`,
+    day().md.schedule||md("schedule")
+  );
+
+};
 
 
 document.getElementById(
   "exportActivity"
-).onclick =
-  () => {
+).onclick=()=>{
 
-    if(
-      !day()
-        .confirmed
-        .activity
-    ){
+  if(!day().confirmed.activity){
 
-      alert(
-        "行動が確定されていません．"
-      );
-
-      return;
-
-    }
-
-
-    download(
-      `activity_${selectedDate}.md`,
-      day().md.activity
-      ||
-      md("activity")
+    alert(
+      "行動が確定されていません．"
     );
 
-  };
+    return;
+
+  }
+
+
+  download(
+    `activity_${selectedDate}.md`,
+    day().md.activity||md("activity")
+  );
+
+};
 
 
 document.getElementById(
   "exportJson"
-).onclick =
-  () => {
+).onclick=()=>{
 
-    download(
-      `activity_${selectedDate}.json`,
-      JSON.stringify(
-        day(),
-        null,
-        2
-      ),
-      "application/json"
-    );
+  download(
+    `activity_${selectedDate}.json`,
+    JSON.stringify(
+      day(),
+      null,
+      2
+    ),
+    "application/json"
+  );
 
-  };
+};
 
 
 document.getElementById(
   "copyMd"
-).onclick =
-  async () => {
+).onclick=async()=>{
 
-    let t =
-      md(mode);
+  let t=md(mode);
 
+  await navigator
+    .clipboard
+    ?.writeText(t);
 
-    await navigator
-      .clipboard
-      ?.writeText(t);
+  document.getElementById(
+    "exportMsg"
+  ).innerHTML=
+    `<div class="success">
+      Markdownをコピーしました．
+     </div>`;
 
-
-    document.getElementById(
-      "exportMsg"
-    ).innerHTML =
-
-      `<div class="success">
-        Markdownをコピーしました．
-      </div>`;
-
-  };
+};
 
 
-/* =========================================================
-   カテゴリ追加
-========================================================= */
+/* カテゴリ追加 */
 
 document.getElementById(
   "addCat"
-).onclick =
-  () => {
+).onclick=()=>{
 
-    let v =
-      document
-        .getElementById(
-          "newCat"
-        )
-        .value
-        .trim();
-
-
-    if(!v){
-
-      return;
-
-    }
-
-
-    if(
-      !db.categories.includes(v)
-    ){
-
-      db.categories.push(v);
-
-    }
-
-
+  let v=
     document.getElementById(
       "newCat"
-    ).value =
-      "";
+    ).value.trim();
 
 
-    save();
-    render();
-
-  };
+  if(!v)
+    return;
 
 
-/* =========================================================
-   初期描画
-========================================================= */
+  if(!db.categories.includes(v))
+    db.categories.push(v);
+
+
+  document.getElementById(
+    "newCat"
+  ).value="";
+
+
+  save();
+
+  render();
+
+};
+
+
+/* =========================
+   初期化
+========================= */
 
 render();
 
 
-/* =========================================================
-   Service Worker
-========================================================= */
-
-if(
-  "serviceWorker"
-  in navigator
-){
+if("serviceWorker" in navigator){
 
   navigator
     .serviceWorker
     .register("sw.js")
-    .catch(
-      () => {}
-    );
+    .catch(()=>{});
 
 }
 
