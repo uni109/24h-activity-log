@@ -16,25 +16,30 @@
   --line:#e5e7eb;
   --accent:#111827;
   --danger:#dc2626;
-  --ok:#15803d
+  --ok:#15803d;
 }
 
 *{
-  box-sizing:border-box
+  box-sizing:border-box;
 }
 
 body{
   margin:0;
   background:var(--bg);
   color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+button,
+input{
+  font:inherit;
 }
 
 .app{
   max-width:560px;
   margin:auto;
   min-height:100vh;
-  padding-bottom:82px
+  padding-bottom:82px;
 }
 
 header{
@@ -43,25 +48,25 @@ header{
   z-index:5;
   background:rgba(245,246,248,.94);
   backdrop-filter:blur(12px);
-  padding:14px 16px 10px
+  padding:14px 16px 10px;
 }
 
 .title{
   font-size:20px;
-  font-weight:750
+  font-weight:750;
 }
 
 .sub{
   font-size:12px;
   color:var(--muted);
-  margin-top:2px
+  margin-top:2px;
 }
 
 .datebar{
   display:flex;
   align-items:center;
   gap:8px;
-  margin-top:12px
+  margin-top:12px;
 }
 
 .datebar button,
@@ -72,7 +77,7 @@ header{
   border-radius:12px;
   height:40px;
   padding:0 13px;
-  font-size:18px
+  font-size:18px;
 }
 
 .datebar input{
@@ -82,19 +87,19 @@ header{
   border-radius:12px;
   background:var(--card);
   padding:0 10px;
-  font-size:16px
+  font-size:16px;
 }
 
 main{
-  padding:8px 14px
+  padding:8px 14px;
 }
 
 .screen{
-  display:none
+  display:none;
 }
 
 .screen.active{
-  display:block
+  display:block;
 }
 
 .card{
@@ -103,14 +108,14 @@ main{
   border-radius:18px;
   padding:14px;
   margin:10px 0;
-  box-shadow:0 2px 10px rgba(0,0,0,.03)
+  box-shadow:0 2px 10px rgba(0,0,0,.03);
 }
 
 .switch{
   display:flex;
   background:#eef0f3;
   padding:3px;
-  border-radius:12px
+  border-radius:12px;
 }
 
 .switch button{
@@ -120,13 +125,13 @@ main{
   height:38px;
   background:transparent;
   font-weight:650;
-  color:var(--muted)
+  color:var(--muted);
 }
 
 .switch button.active{
   background:white;
   color:var(--text);
-  box-shadow:0 1px 4px rgba(0,0,0,.08)
+  box-shadow:0 1px 4px rgba(0,0,0,.08);
 }
 
 .status{
@@ -134,67 +139,262 @@ main{
   justify-content:space-between;
   align-items:center;
   font-size:13px;
-  margin-bottom:8px
+  margin-bottom:8px;
 }
 
 .pill{
   padding:5px 9px;
   border-radius:999px;
-  background:#eef0f3
+  background:#eef0f3;
 }
 
 .pill.ok{
   background:#dcfce7;
-  color:#166534
+  color:#166534;
 }
 
 .pill.warn{
   background:#fee2e2;
-  color:#991b1b
+  color:#991b1b;
 }
+
+/* =========================
+   時計
+   ========================= */
 
 .clockwrap{
   display:flex;
   justify-content:center;
-  padding:8px 0
+  padding:8px 0;
 }
 
 .clock{
   width:min(88vw,360px);
   aspect-ratio:1;
   position:relative;
-  touch-action:none;
-  user-select:none
+  user-select:none;
 }
 
+/*
+  重要：
+  時計は完全に表示専用．
+  pointer-events:none にすることで，
+  円をタップ・ドラッグしても何も起こらない．
+*/
 .clock svg{
   width:100%;
   height:100%;
-  overflow:visible
+  overflow:visible;
+  pointer-events:none;
 }
 
 .clock text{
   font-size:12px;
-  fill:#6b7280
+  fill:#6b7280;
 }
 
 .clock .center{
   fill:#fff;
-  stroke:#e5e7eb
+  stroke:#e5e7eb;
 }
 
 .hint{
   text-align:center;
   color:var(--muted);
   font-size:12px;
-  margin-top:2px
+  margin-top:2px;
 }
+
+/* =========================
+   時間設定
+   ========================= */
+
+.time-editor{
+  margin-top:14px;
+  padding:14px;
+  background:#f8fafc;
+  border:1px solid var(--line);
+  border-radius:16px;
+}
+
+.time-editor-title{
+  font-size:15px;
+  font-weight:750;
+  margin-bottom:12px;
+}
+
+.time-row{
+  display:grid;
+  grid-template-columns:1fr 28px 1fr;
+  align-items:end;
+  gap:6px;
+}
+
+.time-field{
+  display:block;
+}
+
+.time-field span{
+  display:block;
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:5px;
+}
+
+.time-input{
+  width:100%;
+  height:48px;
+  border:1px solid #d1d5db;
+  border-radius:12px;
+  background:white;
+  padding:0 8px;
+  font-size:20px;
+  font-weight:700;
+  text-align:center;
+}
+
+.time-input:focus{
+  outline:2px solid #dbeafe;
+  border-color:#93c5fd;
+}
+
+.time-arrow{
+  text-align:center;
+  font-size:20px;
+  color:var(--muted);
+  padding-bottom:12px;
+}
+
+.duration-box{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:12px;
+  padding:10px 12px;
+  background:white;
+  border-radius:11px;
+  border:1px solid var(--line);
+}
+
+.duration-label{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.duration-value{
+  font-size:18px;
+  font-weight:750;
+}
+
+.quick-title{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:12px;
+  margin-bottom:6px;
+}
+
+.quick-times{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+}
+
+.quick-times button{
+  height:36px;
+  border:1px solid var(--line);
+  background:white;
+  border-radius:9px;
+  font-size:12px;
+  font-weight:650;
+}
+
+.quick-times button:active{
+  background:#eef0f3;
+}
+
+.time-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:10px;
+}
+
+/* =========================
+   カテゴリ選択
+   ========================= */
+
+.category-editor{
+  margin-top:12px;
+  padding:14px;
+  background:white;
+  border:1px solid var(--line);
+  border-radius:16px;
+}
+
+.category-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.category-title strong{
+  font-size:15px;
+}
+
+.category-state{
+  font-size:11px;
+  color:var(--muted);
+}
+
+.category-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+
+.cat{
+  min-height:48px;
+  border:1px solid var(--line);
+  background:white;
+  border-radius:11px;
+  padding:8px 5px;
+  text-align:center;
+  font-size:12px;
+  font-weight:650;
+}
+
+.cat:active{
+  background:#eef0f3;
+}
+
+.cat.fixed{
+  border-style:dashed;
+}
+
+.category-disabled{
+  opacity:.45;
+  pointer-events:none;
+}
+
+.selected-time{
+  margin-bottom:10px;
+  padding:9px 11px;
+  background:#f3f4f6;
+  border-radius:10px;
+  font-size:13px;
+  text-align:center;
+}
+
+/* =========================
+   ボタン
+   ========================= */
 
 .actions{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:9px;
-  margin-top:12px
+  margin-top:12px;
 }
 
 .actions button,
@@ -204,25 +404,39 @@ main{
   border:0;
   border-radius:12px;
   height:44px;
-  font-weight:700
+  font-weight:700;
 }
 
 .primary{
   background:#111827;
   color:white;
-  width:100%
+  width:100%;
 }
 
 .secondary{
   background:#eef0f3;
   color:#111827;
-  width:100%
+  width:100%;
 }
 
 .dangerbtn{
   background:#fee2e2;
   color:#991b1b;
-  width:100%
+  width:100%;
+}
+
+.error{
+  color:var(--danger);
+  font-size:13px;
+  font-weight:650;
+  margin-top:8px;
+}
+
+.success{
+  color:var(--ok);
+  font-size:13px;
+  font-weight:650;
+  margin-top:8px;
 }
 
 .notice{
@@ -231,27 +445,17 @@ main{
   border-radius:12px;
   background:#fff7ed;
   color:#9a3412;
-  margin-top:10px
+  margin-top:10px;
 }
 
-.error{
-  color:var(--danger);
-  font-size:13px;
-  font-weight:650;
-  margin-top:8px
-}
-
-.success{
-  color:var(--ok);
-  font-size:13px;
-  font-weight:650;
-  margin-top:8px
-}
+/* =========================
+   タイムライン
+   ========================= */
 
 .timeline{
   display:flex;
   flex-direction:column;
-  gap:7px
+  gap:7px;
 }
 
 .row{
@@ -259,7 +463,7 @@ main{
   grid-template-columns:86px 1fr 52px;
   gap:8px;
   align-items:center;
-  font-size:13px
+  font-size:13px;
 }
 
 .bar{
@@ -267,7 +471,7 @@ main{
   border-radius:8px;
   background:#eef0f3;
   position:relative;
-  overflow:hidden
+  overflow:hidden;
 }
 
 .seg{
@@ -280,22 +484,26 @@ main{
   white-space:nowrap;
   overflow:hidden;
   font-size:11px;
-  font-weight:650
+  font-weight:650;
 }
 
 .sum{
   display:flex;
   flex-wrap:wrap;
   gap:7px;
-  margin-top:10px
+  margin-top:10px;
 }
 
 .sum span{
   font-size:12px;
   background:#f3f4f6;
   border-radius:999px;
-  padding:5px 8px
+  padding:5px 8px;
 }
+
+/* =========================
+   下部ナビ
+   ========================= */
 
 .bottom{
   position:fixed;
@@ -308,7 +516,7 @@ main{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:5px;
-  z-index:10
+  z-index:10;
 }
 
 .bottom button{
@@ -316,39 +524,23 @@ main{
   background:transparent;
   color:#6b7280;
   padding:7px 0;
-  font-size:11px
+  font-size:11px;
 }
 
 .bottom button.active{
   color:#111827;
-  font-weight:750
+  font-weight:750;
 }
 
 .bottom .ico{
   display:block;
   font-size:20px;
-  margin-bottom:2px
+  margin-bottom:2px;
 }
 
-.category-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px
-}
-
-.cat{
-  border:1px solid var(--line);
-  background:white;
-  border-radius:12px;
-  padding:10px 6px;
-  text-align:center;
-  font-size:12px;
-  font-weight:650
-}
-
-.cat.fixed{
-  border-style:dashed
-}
+/* =========================
+   データ
+   ========================= */
 
 input[type=text]{
   width:100%;
@@ -356,13 +548,13 @@ input[type=text]{
   border:1px solid var(--line);
   border-radius:11px;
   padding:0 11px;
-  font-size:15px
+  font-size:15px;
 }
 
 .list{
   display:flex;
   flex-direction:column;
-  gap:7px
+  gap:7px;
 }
 
 .item{
@@ -371,91 +563,18 @@ input[type=text]{
   justify-content:space-between;
   border:1px solid var(--line);
   border-radius:12px;
-  padding:10px 11px
+  padding:10px 11px;
 }
 
 .small{
   font-size:12px;
-  color:var(--muted)
-}
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.4);
-  display:none;
-  align-items:flex-end;
-  z-index:30
-}
-
-.modal.open{
-  display:flex
-}
-
-.sheet{
-  width:100%;
-  max-width:560px;
-  margin:auto;
-  background:white;
-  border-radius:20px 20px 0 0;
-  padding:16px;
-  max-height:80vh;
-  overflow:auto
-}
-
-.sheet h3{
-  margin:0 0 12px
-}
-
-.catpick{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:8px
-}
-
-.catpick button{
-  height:44px;
-  border:1px solid var(--line);
-  background:white;
-  border-radius:11px;
-  font-weight:650
-}
-
-/* 時間設定 */
-.time-setting{
-  margin-bottom:12px
-}
-
-.time-setting label{
-  display:block;
-  font-size:13px;
-  font-weight:650;
-  margin-bottom:6px
-}
-
-.time-setting select{
-  width:100%;
-  height:48px;
-  border:1px solid var(--line);
-  border-radius:12px;
-  background:white;
-  padding:0 12px;
-  font-size:17px
-}
-
-.selected-time{
-  background:#f3f4f6;
-  border-radius:12px;
-  padding:11px;
-  margin-bottom:12px;
-  text-align:center;
-  font-weight:700
+  color:var(--muted);
 }
 
 .help{
   font-size:12px;
   color:var(--muted);
-  line-height:1.6
+  line-height:1.6;
 }
 </style>
 </head>
@@ -477,6 +596,10 @@ input[type=text]{
 
 <main>
 
+<!-- =========================
+     HOME
+     ========================= -->
+
 <section id="home" class="screen active">
 
   <div class="card">
@@ -495,18 +618,29 @@ input[type=text]{
       <div id="homeClock" class="clock"></div>
     </div>
 
-    <div class="hint">選択日の24時間を可視化</div>
+    <div class="hint">
+      選択日の24時間を可視化
+    </div>
 
   </div>
 
   <div class="card">
     <b>タイムライン</b>
-    <div id="homeTimeline" class="timeline" style="margin-top:10px"></div>
+
+    <div id="homeTimeline"
+         class="timeline"
+         style="margin-top:10px">
+    </div>
+
     <div id="homeSummary" class="sum"></div>
   </div>
 
 </section>
 
+
+<!-- =========================
+     RECORD
+     ========================= -->
 
 <section id="record" class="screen">
 
@@ -524,45 +658,192 @@ input[type=text]{
       <button id="recActivity">行動</button>
     </div>
 
+
+    <!-- 時計は完全に表示専用 -->
+
     <div class="clockwrap">
       <div id="recordClock" class="clock"></div>
     </div>
 
     <div class="hint">
-      円周付近をタップして時間帯を指定
+      円グラフは表示専用です．時間は下から設定します
     </div>
+
+
+    <!-- =========================
+         時間設定
+         ========================= -->
+
+    <div class="time-editor">
+
+      <div class="time-editor-title">
+        ① 時間を設定
+      </div>
+
+      <div class="time-row">
+
+        <label class="time-field">
+          <span>開始</span>
+          <input
+            id="startTime"
+            class="time-input"
+            type="time"
+            step="900">
+        </label>
+
+        <div class="time-arrow">→</div>
+
+        <label class="time-field">
+          <span>終了</span>
+          <input
+            id="endTime"
+            class="time-input"
+            type="time"
+            step="900">
+        </label>
+
+      </div>
+
+
+      <div class="duration-box">
+        <span class="duration-label">
+          記録時間
+        </span>
+
+        <strong
+          id="selectedDuration"
+          class="duration-value">
+          0:30
+        </strong>
+      </div>
+
+
+      <div class="quick-title">
+        よく使う時間
+      </div>
+
+      <div class="quick-times">
+
+        <button data-duration="15">15分</button>
+        <button data-duration="30">30分</button>
+        <button data-duration="60">1時間</button>
+        <button data-duration="120">2時間</button>
+
+      </div>
+
+
+      <div class="time-actions">
+
+        <button
+          class="secondary"
+          id="setNowStartBtn">
+          現在時刻を開始に
+        </button>
+
+        <button
+          class="primary"
+          id="setTimeBtn">
+          時間を決定
+        </button>
+
+      </div>
+
+      <div id="timeError"></div>
+
+    </div>
+
+
+    <!-- =========================
+         カテゴリ選択
+         ========================= -->
+
+    <div class="category-editor">
+
+      <div class="category-title">
+
+        <strong>
+          ② カテゴリを選択
+        </strong>
+
+        <span
+          id="categoryState"
+          class="category-state">
+          時間未設定
+        </span>
+
+      </div>
+
+      <div
+        id="selectedTime"
+        class="selected-time">
+        先に時間を設定してください
+      </div>
+
+      <div
+        id="recordCategoryGrid"
+        class="category-grid category-disabled">
+      </div>
+
+    </div>
+
 
     <div class="actions">
-      <button class="secondary" id="nowBtn">
-        現在時刻から記録
-      </button>
 
-      <button class="secondary" id="clearBtn">
+      <button
+        class="secondary"
+        id="clearBtn">
         編集中をクリア
       </button>
+
+      <button
+        class="secondary"
+        id="nowBtn">
+        現在時刻から30分
+      </button>
+
     </div>
+
 
     <div id="validation"></div>
 
+
     <div class="actions">
-      <button class="primary" id="confirmBtn">
+
+      <button
+        class="primary"
+        id="confirmBtn">
         予定を確定
       </button>
 
-      <button class="secondary" id="reviseBtn">
+      <button
+        class="secondary"
+        id="reviseBtn">
         修正
       </button>
+
     </div>
 
   </div>
 
+
   <div class="card">
+
     <b>現在の入力</b>
-    <div id="recordTimeline" class="timeline" style="margin-top:10px"></div>
+
+    <div
+      id="recordTimeline"
+      class="timeline"
+      style="margin-top:10px">
+    </div>
+
   </div>
 
 </section>
 
+
+<!-- =========================
+     DATA
+     ========================= -->
 
 <section id="data" class="screen">
 
@@ -604,20 +885,33 @@ input[type=text]{
 
     <b>カテゴリ管理</b>
 
-    <div class="help" style="margin:6px 0 10px">
+    <div
+      class="help"
+      style="margin:6px 0 10px">
       睡眠・食事・入浴は固定カテゴリです．
       その他は自由に追加できます．
     </div>
 
     <div class="actions">
-      <input id="newCat" type="text" placeholder="カテゴリ名">
 
-      <button class="primary" id="addCat">
+      <input
+        id="newCat"
+        type="text"
+        placeholder="カテゴリ名">
+
+      <button
+        class="primary"
+        id="addCat">
         カテゴリ追加
       </button>
+
     </div>
 
-    <div id="catList" class="list" style="margin-top:10px"></div>
+    <div
+      id="catList"
+      class="list"
+      style="margin-top:10px">
+    </div>
 
   </div>
 
@@ -626,119 +920,51 @@ input[type=text]{
 </main>
 
 
+<!-- =========================
+     NAV
+     ========================= -->
+
 <nav class="bottom">
 
-  <button class="active" data-screen="home">
+  <button
+    class="active"
+    data-screen="home">
     <span class="ico">⌂</span>
     ホーム
   </button>
 
-  <button data-screen="record">
+  <button
+    data-screen="record">
     <span class="ico">＋</span>
     記録
   </button>
 
-  <button data-screen="data">
+  <button
+    data-screen="data">
     <span class="ico">☷</span>
     データ
   </button>
 
 </nav>
 
-
-<!-- 時間設定・カテゴリ選択モーダル -->
-
-<div id="modal" class="modal">
-
-  <div class="sheet">
-
-    <h3 id="modalTitle">時間を設定</h3>
-
-
-    <!-- STEP 1：時間設定 -->
-
-    <div id="timeStep">
-
-      <div class="time-setting">
-
-        <label for="startTime">
-          開始時刻
-        </label>
-
-        <select id="startTime"></select>
-
-      </div>
-
-
-      <div class="time-setting">
-
-        <label for="endTime">
-          終了時刻
-        </label>
-
-        <select id="endTime"></select>
-
-      </div>
-
-
-      <div id="timeError" class="error"></div>
-
-
-      <button
-        class="primary"
-        id="timeConfirm"
-        style="margin-top:12px"
-      >
-        時間を確定
-      </button>
-
-    </div>
-
-
-    <!-- STEP 2：カテゴリ選択 -->
-
-    <div id="categoryStep" style="display:none">
-
-      <div
-        class="selected-time"
-        id="selectedTime"
-      ></div>
-
-      <div
-        id="catPick"
-        class="catpick"
-      ></div>
-
-    </div>
-
-
-    <button
-      class="secondary"
-      id="modalCancel"
-      style="margin-top:10px"
-    >
-      キャンセル
-    </button>
-
-  </div>
-
 </div>
 
 
 <script>
 
-const FIXED=[
+const FIXED = [
   "睡眠",
   "食事",
   "入浴"
 ];
 
-const KEY="activity_logger_v1";
+const KEY = "activity_logger_v1";
 
-let db=
+
+let db =
   JSON.parse(
-    localStorage.getItem(KEY)||'null'
-  )||
+    localStorage.getItem(KEY) || "null"
+  ) ||
   {
     categories:[
       ...FIXED,
@@ -757,25 +983,50 @@ let db=
   };
 
 
-let dateEl=
+/* =========================
+   日付
+   ========================= */
+
+function localDateString(d=new Date()){
+
+  const y = d.getFullYear();
+
+  const m =
+    String(d.getMonth()+1)
+      .padStart(2,"0");
+
+  const day =
+    String(d.getDate())
+      .padStart(2,"0");
+
+  return `${y}-${m}-${day}`;
+}
+
+
+let dateEl =
   document.getElementById("date");
 
-let selectedDate=
-  new Date().toISOString().slice(0,10);
+let selectedDate =
+  localDateString();
 
-dateEl.value=selectedDate;
-
-
-let mode="schedule";
-
-let homeMode="schedule";
-
-let pending=null;
+dateEl.value =
+  selectedDate;
 
 
 /* =========================
-   基本処理
-========================= */
+   状態
+   ========================= */
+
+let mode = "schedule";
+
+let homeMode = "schedule";
+
+let pending = null;
+
+
+/* =========================
+   基本関数
+   ========================= */
 
 function save(){
 
@@ -791,17 +1042,21 @@ function day(){
 
   if(!db.days[selectedDate]){
 
-    db.days[selectedDate]={
+    db.days[selectedDate] = {
+
       schedule:[],
       activity:[],
+
       confirmed:{
         schedule:false,
         activity:false
       },
+
       md:{
         schedule:"",
         activity:""
       }
+
     };
 
   }
@@ -813,7 +1068,7 @@ function day(){
 
 function mins(t){
 
-  let [h,m]=
+  let [h,m] =
     t.split(":").map(Number);
 
   return h*60+m;
@@ -823,15 +1078,18 @@ function mins(t){
 
 function hh(m){
 
-  m=((m%1440)+1440)%1440;
+  m =
+    ((m%1440)+1440)%1440;
 
-  return String(
-    Math.floor(m/60)
-  ).padStart(2,"0")
-  +":"
-  +String(
-    m%60
-  ).padStart(2,"0");
+  return (
+    String(Math.floor(m/60))
+      .padStart(2,"0")
+    +
+    ":"
+    +
+    String(m%60)
+      .padStart(2,"0")
+  );
 
 }
 
@@ -839,8 +1097,8 @@ function hh(m){
 function dur(a,b){
 
   return b>=a
-    ?b-a
-    :1440-a+b;
+    ? b-a
+    : 1440-a+b;
 
 }
 
@@ -857,85 +1115,238 @@ function esc(s){
 
 function fmtDur(x){
 
-  return `${Math.floor(x/60)}:${String(x%60).padStart(2,"0")}`;
+  return (
+    `${Math.floor(x/60)}:` +
+    `${String(x%60).padStart(2,"0")}`
+  );
 
 }
 
 
 function records(which=mode){
 
-  return day()[which]||[];
+  return day()[which] || [];
 
 }
 
 
 /* =========================
-   24時間チェック
-========================= */
+   時間設定
+   ========================= */
 
-function validate(which=mode){
+function roundTo15(m){
 
-  let r=records(which);
+  return Math.floor(m/15)*15;
 
-  let total=0;
+}
 
-  r.forEach(x=>{
-    total+=dur(
-      mins(x.start),
-      mins(x.end)
-    );
-  });
 
-  let missing=1440-total;
+function updateDuration(){
 
-  let el=
-    document.getElementById("validation");
+  const start =
+    document.getElementById("startTime").value;
 
-  el.innerHTML=
-    missing>0
-      ?
+  const end =
+    document.getElementById("endTime").value;
+
+  const durationEl =
+    document.getElementById("selectedDuration");
+
+  if(!start || !end){
+
+    durationEl.textContent = "未設定";
+
+    return false;
+
+  }
+
+  const duration =
+    dur(mins(start),mins(end));
+
+  if(duration===0){
+
+    durationEl.textContent = "0:00";
+
+    return false;
+
+  }
+
+  durationEl.textContent =
+    fmtDur(duration);
+
+  return true;
+
+}
+
+
+function validateTimeInput(){
+
+  const start =
+    document.getElementById("startTime").value;
+
+  const end =
+    document.getElementById("endTime").value;
+
+  const errorEl =
+    document.getElementById("timeError");
+
+  if(!start || !end){
+
+    errorEl.innerHTML =
       `<div class="error">
-        ⚠ 未記録時間があります：
-        ${fmtDur(missing)}
-        （${fmtDur(total)}/24:00）
-      </div>`
-      :
-      `<div class="success">
-        24時間すべて記録されています．
+        開始時刻と終了時刻を入力してください．
       </div>`;
 
-  return {
-    total,
-    missing
+    return false;
+
+  }
+
+  if(start===end){
+
+    errorEl.innerHTML =
+      `<div class="error">
+        開始時刻と終了時刻を別々に設定してください．
+      </div>`;
+
+    return false;
+
+  }
+
+  errorEl.innerHTML = "";
+
+  return true;
+
+}
+
+
+function updateCategoryState(){
+
+  const start =
+    document.getElementById("startTime").value;
+
+  const end =
+    document.getElementById("endTime").value;
+
+  const grid =
+    document.getElementById(
+      "recordCategoryGrid"
+    );
+
+  const selected =
+    document.getElementById(
+      "selectedTime"
+    );
+
+  const state =
+    document.getElementById(
+      "categoryState"
+    );
+
+  if(!start || !end || start===end){
+
+    grid.classList.add(
+      "category-disabled"
+    );
+
+    state.textContent =
+      "時間未設定";
+
+    selected.textContent =
+      "先に時間を設定してください";
+
+    pending = null;
+
+    return;
+
+  }
+
+  grid.classList.remove(
+    "category-disabled"
+  );
+
+  state.textContent =
+    "選択できます";
+
+  selected.textContent =
+    `${start} → ${end}　（${fmtDur(
+      dur(mins(start),mins(end))
+    )}）`;
+
+  pending = {
+    start,
+    end
   };
 
 }
 
 
 /* =========================
-   重複チェック
-========================= */
+   現在時刻
+   ========================= */
+
+function setCurrentStart(){
+
+  const now =
+    new Date();
+
+  const current =
+    now.getHours()*60 +
+    now.getMinutes();
+
+  const start =
+    roundTo15(current);
+
+  document.getElementById(
+    "startTime"
+  ).value = hh(start);
+
+  document.getElementById(
+    "endTime"
+  ).value = hh((start+30)%1440);
+
+  updateDuration();
+  updateCategoryState();
+
+}
+
+
+function setNow30(){
+
+  setCurrentStart();
+
+}
+
+
+/* =========================
+   重複処理
+   ========================= */
 
 function overlaps(list,s,e){
 
-  const a=mins(s);
-  const b=mins(e);
+  const a = mins(s);
+  const b = mins(e);
 
   return list.some(x=>{
 
-    const xs=mins(x.start);
-    const xe=mins(x.end);
+    const xs = mins(x.start);
+    const xe = mins(x.end);
 
-    if(b>a){
+    const newIntervals =
+      b>a
+        ? [[a,b]]
+        : [[a,1440],[0,b]];
 
-      return xs<b && xe>a;
+    const oldIntervals =
+      xe>xs
+        ? [[xs,xe]]
+        : [[xs,1440],[0,xe]];
 
-    }
-
-    return (
-      (xs<1440&&xe>a)||
-      (xs<b&&xe>0)||
-      (xs===0&&xe===1440)
+    return newIntervals.some(
+      ([na,nb]) =>
+        oldIntervals.some(
+          ([oa,ob]) =>
+            na<ob && nb>oa
+        )
     );
 
   });
@@ -945,7 +1356,7 @@ function overlaps(list,s,e){
 
 /* =========================
    記録追加
-========================= */
+   ========================= */
 
 function addRecord(
   start,
@@ -965,79 +1376,113 @@ function addRecord(
   }
 
 
-  let list=records(which);
+  let list =
+    records(which);
 
 
   if(
-    overlaps(list,start,end)&&
-    !confirm(
-      "既存の記録と重複しています．"+
-      "重複部分は上書きされますがよろしいですか？"
+    overlaps(
+      list,
+      start,
+      end
     )
   ){
 
-    return;
+    if(
+      !confirm(
+        "既存の記録と重複しています．\n" +
+        "重複部分は上書きされますがよろしいですか？"
+      )
+    ){
+
+      return;
+
+    }
 
   }
 
 
-  let ns=mins(start);
-  let ne=mins(end);
+  const ns = mins(start);
+  const ne = mins(end);
 
-
-  let intervals=
+  const intervals =
     ne>ns
-      ?[[ns,ne]]
-      :[[ns,1440],[0,ne]];
+      ? [[ns,ne]]
+      : [[ns,1440],[0,ne]];
 
 
   let out=[];
 
 
-  for(const x of list){
+  for(
+    const x of list
+  ){
 
-    let xs=mins(x.start);
-    let xe=mins(x.end);
+    const xs = mins(x.start);
+    const xe = mins(x.end);
 
-
-    let xints=
+    const xints =
       xe>xs
-        ?[[xs,xe]]
-        :[[xs,1440],[0,xe]];
+        ? [[xs,xe]]
+        : [[xs,1440],[0,xe]];
 
 
-    for(const [xa,xb] of xints){
+    for(
+      const [xa,xb]
+      of xints
+    ){
 
-      let pieces=[[xa,xb]];
+      let pieces =
+        [[xa,xb]];
 
 
-      for(const [oa,ob] of intervals){
+      for(
+        const [oa,ob]
+        of intervals
+      ){
 
         let next=[];
 
 
-        for(const [pa,pb] of pieces){
+        for(
+          const [pa,pb]
+          of pieces
+        ){
 
           if(
-            pb<=oa||
+            pb<=oa ||
             pa>=ob
           ){
 
-            next.push([pa,pb]);
+            next.push(
+              [pa,pb]
+            );
 
           }else{
 
-            if(pa<oa)
-              next.push([pa,oa]);
+            if(pa<oa){
 
-            if(pb>ob)
-              next.push([ob,pb]);
+              next.push(
+                [pa,oa]
+              );
+
+            }
+
+            if(pb>ob){
+
+              next.push(
+                [ob,pb]
+              );
+
+            }
 
           }
 
         }
 
-        pieces=next;
+
+        pieces =
+          next;
 
       }
 
@@ -1050,9 +1495,11 @@ function addRecord(
         if(pb>pa){
 
           out.push({
+
             start:hh(pa),
             end:hh(pb),
             category:x.category
+
           });
 
         }
@@ -1072,9 +1519,11 @@ function addRecord(
     if(b>a){
 
       out.push({
+
         start:hh(a),
         end:hh(b),
         category
+
       });
 
     }
@@ -1088,9 +1537,12 @@ function addRecord(
   );
 
 
-  day()[which]=out;
+  day()[which] =
+    out;
 
   save();
+
+  clearTimeEditor();
 
   render();
 
@@ -1099,112 +1551,149 @@ function addRecord(
 
 /* =========================
    時計描画
-========================= */
+   ========================= */
 
 function svgClock(list){
 
-  const size=340;
-  const c=170;
-  const R=150;
-  const inner=112;
+  const size = 340;
+
+  const c = 170;
+
+  const R = 150;
+
+  const inner = 112;
 
 
-  const palette={};
+  const palette = {};
 
   db.categories.forEach(
     (x,i)=>
-      palette[x]=
+      palette[x] =
         `hsl(${(i*47)%360} 62% 58%)`
   );
 
 
-  const polar=(
-    m,
-    r=R
-  )=>{
+  const polar =
+    (m,r=R)=>{
 
-    let ang=
-      (m/1440)*Math.PI*2
-      -Math.PI/2;
+      const ang =
+        (m/1440)*Math.PI*2
+        -Math.PI/2;
 
-    return [
-      c+r*Math.cos(ang),
-      c+r*Math.sin(ang)
-    ];
+      return [
 
-  };
+        c+r*Math.cos(ang),
 
+        c+r*Math.sin(ang)
 
-  const arc=(
-    s,
-    e,
-    r1=inner,
-    r2=R
-  )=>{
+      ];
 
-    let a=s;
-    let b=e;
-
-    if(b<=a)
-      b+=1440;
-
-    let span=b-a;
-
-    let large=
-      span>720?1:0;
-
-    let p1=
-      polar(a%1440,r2);
-
-    let p2=
-      polar(b%1440,r2);
-
-    let q2=
-      polar(b%1440,r1);
-
-    let q1=
-      polar(a%1440,r1);
+    };
 
 
-    let category=
-      list.find(
-        x=>
-          mins(x.start)
-          ===a%1440
-      )?.category;
+  const arc =
+    (
+      s,
+      e,
+      r1=inner,
+      r2=R
+    )=>{
+
+      let a=s;
+
+      let b=e;
+
+      if(b<=a){
+
+        b+=1440;
+
+      }
 
 
-    return `
-      <path
-        d="
-          M ${p1}
-          A ${r2} ${r2} 0
-          ${large} 1 ${p2}
-          L ${q2}
-          A ${r1} ${r1} 0
-          ${large} 0 ${q1}
-          Z
-        "
-        fill="${palette[category]||'#d1d5db'}"
-        opacity=".86"
-      />
-    `;
+      const span =
+        b-a;
 
-  };
+      const large =
+        span>720 ? 1 : 0;
+
+
+      const p1 =
+        polar(
+          a%1440,
+          r2
+        );
+
+      const p2 =
+        polar(
+          b%1440,
+          r2
+        );
+
+      const q2 =
+        polar(
+          b%1440,
+          r1
+        );
+
+      const q1 =
+        polar(
+          a%1440,
+          r1
+        );
+
+
+      const record =
+        list.find(
+          x =>
+            mins(x.start)
+            ===
+            a%1440
+        );
+
+
+      const category =
+        record
+          ? record.category
+          : null;
+
+
+      return `
+        <path
+          d="
+            M ${p1}
+            A ${r2} ${r2}
+              0 ${large} 1 ${p2}
+            L ${q2}
+            A ${r1} ${r1}
+              0 ${large} 0 ${q1}
+            Z
+          "
+          fill="${
+            palette[category]
+            || "#d1d5db"
+          }"
+          opacity=".86"
+        />
+      `;
+
+    };
 
 
   let parts=[];
 
 
-  /* 24時間目盛 */
+  for(
+    let i=0;
+    i<24;
+    i++
+  ){
 
-  for(let i=0;i<24;i++){
-
-    let p=
+    const p =
       polar(i*60,R+1);
 
-    let q=
+    const q =
       polar(i*60,R+10);
+
 
     parts.push(`
       <line
@@ -1213,16 +1702,18 @@ function svgClock(list){
         x2="${q[0]}"
         y2="${q[1]}"
         stroke="#9ca3af"
-        stroke-width="${i%6===0?2:1}"
+        stroke-width="${
+          i%6===0 ? 2 : 1
+        }"
       />
     `);
 
   }
 
 
-  /* 記録済み時間 */
-
-  for(const x of list){
+  for(
+    const x of list
+  ){
 
     parts.push(
       arc(
@@ -1234,22 +1725,24 @@ function svgClock(list){
   }
 
 
-  /* 時刻表示 */
+  for(
+    let i=0;
+    i<24;
+    i+=3
+  ){
 
-  for(let i=0;i<24;i+=3){
-
-    let p=
+    const p =
       polar(
         i*60,
         inner-16
       );
 
+
     parts.push(`
       <text
         x="${p[0]}"
         y="${p[1]+4}"
-        text-anchor="middle"
-      >
+        text-anchor="middle">
         ${i}
       </text>
     `);
@@ -1257,23 +1750,11 @@ function svgClock(list){
   }
 
 
-  let total=
-    list.reduce(
-      (s,x)=>
-        s+
-        dur(
-          mins(x.start),
-          mins(x.end)
-        ),
-      0
-    );
-
-
   return `
+
     <svg
       viewBox="0 0 ${size} ${size}"
-      aria-label="24時間グラフ"
-    >
+      aria-label="24時間グラフ">
 
       <circle
         cx="${c}"
@@ -1283,14 +1764,14 @@ function svgClock(list){
         stroke="#e5e7eb"
       />
 
+      ${parts.join("")}
+
       <circle
         class="center"
         cx="${c}"
         cy="${c}"
         r="${inner}"
       />
-
-      ${parts.join("")}
 
       <text
         x="${c}"
@@ -1299,398 +1780,66 @@ function svgClock(list){
         style="
           font-size:20px;
           fill:#111827;
-          font-weight:700
-        "
-      >
-        ${selectedDate.slice(5).replace("-","/")}
+          font-weight:700;
+        ">
+        ${selectedDate
+          .slice(5)
+          .replace("-","/")}
       </text>
 
       <text
         x="${c}"
         y="${c+17}"
-        text-anchor="middle"
-      >
-        ${total===1440?"24:00":"記録"}
+        text-anchor="middle">
+
+        ${
+          list.reduce(
+            (s,x)=>
+              s+
+              dur(
+                mins(x.start),
+                mins(x.end)
+              ),
+            0
+          )===1440
+            ? "24:00"
+            : "記録"
+        }
+
       </text>
 
     </svg>
+
   `;
 
 }
 
 
-/* =========================
-   時計描画
-========================= */
-
 function renderClock(){
 
   document.getElementById(
     "homeClock"
-  ).innerHTML=
+  ).innerHTML =
     svgClock(
-      db.days[selectedDate]?.[homeMode]||[]
+      db.days[selectedDate]?.[
+        homeMode
+      ] || []
     );
 
 
-  const rc=
-    document.getElementById(
-      "recordClock"
-    );
-
-  rc.innerHTML=
+  document.getElementById(
+    "recordClock"
+  ).innerHTML =
     svgClock(
       records(mode)
     );
-
-
-  attachRingTap(rc);
-
-}
-
-
-/* =========================
-   円周タップ
-========================= */
-
-function attachRingTap(el){
-
-  /*
-   * SVGの実寸に合わせて座標を取得する．
-   * 時計の中心は170,170．
-   * 円の半径は150．
-   *
-   * 132〜168pxの範囲だけを
-   * タッチ可能領域とする．
-   */
-
-  const pointToMin=e=>{
-
-    const r=
-      el.getBoundingClientRect();
-
-
-    const x=
-      (e.clientX-r.left)
-      /r.width
-      *340;
-
-
-    const y=
-      (e.clientY-r.top)
-      /r.height
-      *340;
-
-
-    const dx=x-170;
-    const dy=y-170;
-
-
-    const radius=
-      Math.sqrt(
-        dx*dx+dy*dy
-      );
-
-
-    /*
-     * 円周から離れた位置は無効
-     */
-
-    if(
-      radius<132||
-      radius>168
-    ){
-
-      return null;
-
-    }
-
-
-    let a=
-      Math.atan2(dy,dx)
-      +Math.PI/2;
-
-
-    if(a<0)
-      a+=Math.PI*2;
-
-
-    /*
-     * 15分単位にスナップ
-     */
-
-    return Math.round(
-      (
-        a/
-        (Math.PI*2)*
-        1440
-      )/15
-    )*15%1440;
-
-  };
-
-
-  el.onpointerdown=e=>{
-
-    if(
-      !document
-        .getElementById("record")
-        .classList
-        .contains("active")
-    ){
-
-      return;
-
-    }
-
-
-    const m=
-      pointToMin(e);
-
-
-    /*
-     * 円周以外なら何もしない
-     */
-
-    if(m===null)
-      return;
-
-
-    e.preventDefault();
-
-
-    /*
-     * 初期値として30分後を設定
-     */
-
-    const start=hh(m);
-
-    const end=
-      hh(
-        (m+30)%1440
-      );
-
-
-    openTimePicker(
-      start,
-      end
-    );
-
-  };
-
-}
-
-
-/* =========================
-   時間選択肢
-========================= */
-
-function timeOptions(){
-
-  let html="";
-
-
-  /*
-   * 00:00〜23:45まで
-   * 15分刻み
-   */
-
-  for(
-    let m=0;
-    m<1440;
-    m+=15
-  ){
-
-    html+=`
-      <option value="${hh(m)}">
-        ${hh(m)}
-      </option>
-    `;
-
-  }
-
-
-  return html;
-
-}
-
-
-/* =========================
-   時間設定画面
-========================= */
-
-function openTimePicker(
-  start,
-  end
-){
-
-  const modal=
-    document.getElementById(
-      "modal"
-    );
-
-
-  document.getElementById(
-    "modalTitle"
-  ).textContent=
-    "時間を設定";
-
-
-  document.getElementById(
-    "timeStep"
-  ).style.display=
-    "block";
-
-
-  document.getElementById(
-    "categoryStep"
-  ).style.display=
-    "none";
-
-
-  const startEl=
-    document.getElementById(
-      "startTime"
-    );
-
-
-  const endEl=
-    document.getElementById(
-      "endTime"
-    );
-
-
-  startEl.innerHTML=
-    timeOptions();
-
-
-  endEl.innerHTML=
-    timeOptions();
-
-
-  startEl.value=start;
-  endEl.value=end;
-
-
-  document.getElementById(
-    "timeError"
-  ).textContent="";
-
-
-  modal.classList.add(
-    "open"
-  );
-
-}
-
-
-/* =========================
-   カテゴリ選択
-========================= */
-
-function openCategoryStep(){
-
-  const start=
-    document.getElementById(
-      "startTime"
-    ).value;
-
-
-  const end=
-    document.getElementById(
-      "endTime"
-    ).value;
-
-
-  if(start===end){
-
-    document.getElementById(
-      "timeError"
-    ).textContent=
-      "開始時刻と終了時刻が同じです．";
-
-    return;
-
-  }
-
-
-  pending={
-    start,
-    end
-  };
-
-
-  document.getElementById(
-    "timeStep"
-  ).style.display=
-    "none";
-
-
-  document.getElementById(
-    "categoryStep"
-  ).style.display=
-    "block";
-
-
-  document.getElementById(
-    "modalTitle"
-  ).textContent=
-    "カテゴリを選択";
-
-
-  document.getElementById(
-    "selectedTime"
-  ).textContent=
-    `${start} ～ ${end}`;
-
-
-  document.getElementById(
-    "catPick"
-  ).innerHTML=
-    db.categories
-      .map(
-        c=>
-          `<button data-cat="${esc(c)}">
-            ${esc(c)}
-          </button>`
-      )
-      .join("");
-
-
-  document
-    .querySelectorAll(
-      "#catPick button"
-    )
-    .forEach(b=>{
-
-      b.onclick=()=>{
-
-        addRecord(
-          pending.start,
-          pending.end,
-          b.dataset.cat,
-          mode
-        );
-
-
-        document
-          .getElementById("modal")
-          .classList
-          .remove("open");
-
-
-        pending=null;
-
-      };
-
-    });
 
 }
 
 
 /* =========================
    タイムライン
-========================= */
+   ========================= */
 
 function timelineHTML(list){
 
@@ -1705,56 +1854,56 @@ function timelineHTML(list){
   }
 
 
-  let rows=
-    list
-      .map(x=>{
+  let rows =
+    list.map(x=>{
 
-        const d=
-          dur(
-            mins(x.start),
-            mins(x.end)
-          );
+      const d =
+        dur(
+          mins(x.start),
+          mins(x.end)
+        );
 
+      const left =
+        mins(x.start)/1440*100;
 
-        const left=
-          mins(x.start)/1440*100;
-
-
-        const width=
-          d/1440*100;
+      const width =
+        d/1440*100;
 
 
-        return `
-          <div class="row">
+      return `
 
-            <div>
-              ${x.start}–${x.end}
-            </div>
+        <div class="row">
 
-            <div class="bar">
+          <div>
+            ${x.start}–${x.end}
+          </div>
 
-              <div
-                class="seg"
-                style="
-                  left:${left}%;
-                  width:${Math.max(width,.8)}%;
-                  background:#dbeafe
-                "
-              >
-                ${esc(x.category)}
-              </div>
+          <div class="bar">
 
-            </div>
+            <div
+              class="seg"
+              style="
+                left:${left}%;
+                width:${Math.max(width,.8)}%;
+                background:#dbeafe
+              ">
 
-            <div>
-              ${fmtDur(d)}
+              ${esc(x.category)}
+
             </div>
 
           </div>
-        `;
 
-      })
-      .join("");
+          <div>
+            ${fmtDur(d)}
+          </div>
+
+        </div>
+
+      `;
+
+    })
+    .join("");
 
 
   let sums={};
@@ -1762,8 +1911,9 @@ function timelineHTML(list){
 
   list.forEach(x=>{
 
-    sums[x.category]=
-      (sums[x.category]||0)+
+    sums[x.category] =
+      (sums[x.category]||0)
+      +
       dur(
         mins(x.start),
         mins(x.end)
@@ -1772,34 +1922,139 @@ function timelineHTML(list){
   });
 
 
-  let sum=
-    Object
-      .entries(sums)
+  let sum =
+    Object.entries(sums)
       .sort(
-        (a,b)=>b[1]-a[1]
+        (a,b)=>
+          b[1]-a[1]
       )
       .map(
         ([k,v])=>
           `<span>
-            ${esc(k)} ${fmtDur(v)}
+            ${esc(k)}
+            ${fmtDur(v)}
           </span>`
       )
       .join("");
 
 
-  return `
-    ${rows}
-    <div class="sum">
-      ${sum}
-    </div>
-  `;
+  return (
+    rows+
+    `<div class="sum">${sum}</div>`
+  );
 
 }
 
 
 /* =========================
-   全体描画
-========================= */
+   カテゴリ描画
+   ========================= */
+
+function renderRecordCategories(){
+
+  const grid =
+    document.getElementById(
+      "recordCategoryGrid"
+    );
+
+
+  grid.innerHTML =
+    db.categories
+      .map(
+        c=>
+          `
+          <button
+            class="cat ${
+              FIXED.includes(c)
+                ? "fixed"
+                : ""
+            }"
+            data-record-cat="${esc(c)}">
+
+            ${esc(c)}
+
+          </button>
+          `
+      )
+      .join("");
+
+
+  grid
+    .querySelectorAll(
+      "[data-record-cat]"
+    )
+    .forEach(button=>{
+
+      button.onclick=()=>{
+
+        const start =
+          document.getElementById(
+            "startTime"
+          ).value;
+
+        const end =
+          document.getElementById(
+            "endTime"
+          ).value;
+
+
+        if(
+          !start ||
+          !end ||
+          start===end
+        ){
+
+          return;
+
+        }
+
+
+        addRecord(
+          start,
+          end,
+          button.dataset.recordCat,
+          mode
+        );
+
+      };
+
+    });
+
+}
+
+
+/* =========================
+   時間入力クリア
+   ========================= */
+
+function clearTimeEditor(){
+
+  document.getElementById(
+    "startTime"
+  ).value="";
+
+  document.getElementById(
+    "endTime"
+  ).value="";
+
+  document.getElementById(
+    "selectedDuration"
+  ).textContent="未設定";
+
+  document.getElementById(
+    "timeError"
+  ).innerHTML="";
+
+  pending=null;
+
+  updateCategoryState();
+
+}
+
+
+/* =========================
+   Render
+   ========================= */
 
 function render(){
 
@@ -1808,7 +2063,7 @@ function render(){
 
   document.getElementById(
     "homeTimeline"
-  ).innerHTML=
+  ).innerHTML =
     timelineHTML(
       day()[homeMode]
     );
@@ -1816,7 +2071,7 @@ function render(){
 
   document.getElementById(
     "recordTimeline"
-  ).innerHTML=
+  ).innerHTML =
     timelineHTML(
       records(mode)
     );
@@ -1856,25 +2111,28 @@ function render(){
 
   document.getElementById(
     "confirmBtn"
-  ).textContent=
-    (mode==="schedule"
-      ?"予定"
-      :"行動")
-    +"を確定";
+  ).textContent =
+    (
+      mode==="schedule"
+        ? "予定"
+        : "行動"
+    )
+    +
+    "を確定";
 
 
-  let d=day();
+  const d = day();
 
 
-  let st=
+  const st =
     `予定：${
       d.confirmed.schedule
-        ?"確定"
-        :"未確定"
+        ? "確定"
+        : "未確定"
     }　行動：${
       d.confirmed.activity
-        ?"確定"
-        :"未確定"
+        ? "確定"
+        : "未確定"
     }`;
 
 
@@ -1883,36 +2141,36 @@ function render(){
   ).textContent=st;
 
 
+  const homeConfirmed =
+    homeMode==="schedule"
+      ? d.confirmed.schedule
+      : d.confirmed.activity;
+
+
   document.getElementById(
     "homeStatus"
-  ).textContent=
+  ).textContent =
     homeMode==="schedule"
-      ?
-      (
-        d.confirmed.schedule
-          ?"予定：確定"
-          :"予定：未確定"
+      ? (
+        homeConfirmed
+          ? "予定：確定"
+          : "予定：未確定"
       )
-      :
-      (
-        d.confirmed.activity
-          ?"行動：確定"
-          :"行動：未確定"
+      : (
+        homeConfirmed
+          ? "行動：確定"
+          : "行動：未確定"
       );
 
 
   document.getElementById(
     "homeStatus"
-  ).className=
-    "pill "+
+  ).className =
+    "pill " +
     (
-      (
-        homeMode==="schedule"
-          ?d.confirmed.schedule
-          :d.confirmed.activity
-      )
-        ?"ok"
-        :""
+      homeConfirmed
+        ? "ok"
+        : ""
     );
 
 
@@ -1920,23 +2178,89 @@ function render(){
 
   renderCategories();
 
+  renderRecordCategories();
+
   renderClock();
+
+  updateDuration();
+
+  updateCategoryState();
+
+}
+
+
+/* =========================
+   Validation
+   ========================= */
+
+function validate(which=mode){
+
+  let r =
+    records(which);
+
+  let total=0;
+
+
+  r.forEach(x=>{
+
+    total +=
+      dur(
+        mins(x.start),
+        mins(x.end)
+      );
+
+  });
+
+
+  let missing =
+    1440-total;
+
+
+  let el =
+    document.getElementById(
+      "validation"
+    );
+
+
+  el.innerHTML =
+    missing>0
+
+      ? `
+        <div class="error">
+          ⚠ 未記録時間があります：
+          ${fmtDur(missing)}
+          （${fmtDur(total)}/24:00）
+        </div>
+        `
+
+      : `
+        <div class="success">
+          24時間すべて記録されています．
+        </div>
+        `;
+
+
+  return {
+    total,
+    missing
+  };
 
 }
 
 
 /* =========================
    Markdown
-========================= */
+   ========================= */
 
 function md(which){
 
-  let list=day()[which];
+  let list =
+    day()[which];
 
-  let title=
+  let title =
     which==="schedule"
-      ?"Schedule"
-      :"Activity";
+      ? "Schedule"
+      : "Activity";
 
 
   let sums={};
@@ -1944,8 +2268,9 @@ function md(which){
 
   list.forEach(x=>{
 
-    sums[x.category]=
-      (sums[x.category]||0)+
+    sums[x.category] =
+      (sums[x.category]||0)
+      +
       dur(
         mins(x.start),
         mins(x.end)
@@ -1978,8 +2303,7 @@ ${
 ## Summary
 
 ${
-  Object
-    .entries(sums)
+  Object.entries(sums)
     .sort(
       (a,b)=>b[1]-a[1]
     )
@@ -1995,8 +2319,8 @@ ${
 
 
 /* =========================
-   ファイル出力
-========================= */
+   Download
+   ========================= */
 
 function download(
   name,
@@ -2004,11 +2328,10 @@ function download(
   type="text/markdown"
 ){
 
-  let a=
+  let a =
     document.createElement("a");
 
-
-  a.href=
+  a.href =
     URL.createObjectURL(
       new Blob(
         [text],
@@ -2016,14 +2339,15 @@ function download(
       )
     );
 
-
   a.download=name;
 
   a.click();
 
-
   setTimeout(
-    ()=>URL.revokeObjectURL(a.href),
+    ()=>
+      URL.revokeObjectURL(
+        a.href
+      ),
     1000
   );
 
@@ -2031,36 +2355,36 @@ function download(
 
 
 /* =========================
-   カテゴリ管理
-========================= */
+   Category Management
+   ========================= */
 
 function renderCategories(){
 
   document.getElementById(
     "catList"
-  ).innerHTML=
+  ).innerHTML =
+
     db.categories
       .map(
         c=>
-          `<div class="item">
+          `
+          <div class="item">
 
             <span>
               ${esc(c)}
+
               ${
                 FIXED.includes(c)
-                  ?
-                  '<span class="small">固定</span>'
-                  :
-                  ''
+                  ? '<span class="small">固定</span>'
+                  : ""
               }
+
             </span>
 
             ${
               FIXED.includes(c)
-                ?
-                ""
-                :
-                `
+                ? ""
+                : `
                   <button
                     class="dangerbtn"
                     style="
@@ -2068,28 +2392,32 @@ function renderCategories(){
                       height:32px;
                       padding:0 10px
                     "
-                    data-del="${esc(c)}"
-                  >
+                    data-del="${esc(c)}">
+
                     削除
+
                   </button>
-                `
+                  `
             }
 
-          </div>`
+          </div>
+          `
       )
       .join("");
 
 
   document
-    .querySelectorAll("[data-del]")
-    .forEach(b=>{
+    .querySelectorAll(
+      "[data-del]"
+    )
+    .forEach(button=>{
 
-      b.onclick=()=>{
+      button.onclick=()=>{
 
-        db.categories=
+        db.categories =
           db.categories.filter(
-            c=>
-              c!==b.dataset.del
+            c =>
+              c!==button.dataset.del
           );
 
         save();
@@ -2104,15 +2432,18 @@ function renderCategories(){
 
 
 /* =========================
-   画面切り替え
-========================= */
+   Screen
+   ========================= */
 
 function switchScreen(id){
 
   document
     .querySelectorAll(".screen")
-    .forEach(x=>
-      x.classList.remove("active")
+    .forEach(
+      x =>
+        x.classList.remove(
+          "active"
+        )
     );
 
 
@@ -2122,12 +2453,15 @@ function switchScreen(id){
 
 
   document
-    .querySelectorAll(".bottom button")
-    .forEach(x=>
-      x.classList.toggle(
-        "active",
-        x.dataset.screen===id
-      )
+    .querySelectorAll(
+      ".bottom button"
+    )
+    .forEach(
+      x =>
+        x.classList.toggle(
+          "active",
+          x.dataset.screen===id
+        )
     );
 
 
@@ -2137,40 +2471,47 @@ function switchScreen(id){
 
 
 /* =========================
-   ナビゲーション
-========================= */
+   Navigation
+   ========================= */
 
 document
-  .querySelectorAll(".bottom button")
+  .querySelectorAll(
+    ".bottom button"
+  )
   .forEach(
-    b=>
-      b.onclick=
-        ()=>switchScreen(
-          b.dataset.screen
-        )
+    b =>
+      b.onclick =
+        () =>
+          switchScreen(
+            b.dataset.screen
+          )
   );
 
 
 /* =========================
-   日付変更
-========================= */
+   Date
+   ========================= */
 
 document.getElementById(
   "prev"
 ).onclick=()=>{
 
-  let d=
-    new Date(selectedDate);
+  let d =
+    new Date(
+      selectedDate+"T12:00:00"
+    );
 
   d.setDate(
     d.getDate()-1
   );
 
-  selectedDate=
-    d.toISOString().slice(0,10);
+  selectedDate =
+    localDateString(d);
 
-  dateEl.value=
+  dateEl.value =
     selectedDate;
+
+  clearTimeEditor();
 
   render();
 
@@ -2181,18 +2522,22 @@ document.getElementById(
   "next"
 ).onclick=()=>{
 
-  let d=
-    new Date(selectedDate);
+  let d =
+    new Date(
+      selectedDate+"T12:00:00"
+    );
 
   d.setDate(
     d.getDate()+1
   );
 
-  selectedDate=
-    d.toISOString().slice(0,10);
+  selectedDate =
+    localDateString(d);
 
-  dateEl.value=
+  dateEl.value =
     selectedDate;
+
+  clearTimeEditor();
 
   render();
 
@@ -2201,8 +2546,10 @@ document.getElementById(
 
 dateEl.onchange=()=>{
 
-  selectedDate=
+  selectedDate =
     dateEl.value;
+
+  clearTimeEditor();
 
   render();
 
@@ -2210,8 +2557,8 @@ dateEl.onchange=()=>{
 
 
 /* =========================
-   ホーム切り替え
-========================= */
+   Home Mode
+   ========================= */
 
 document.getElementById(
   "homeSchedule"
@@ -2236,14 +2583,16 @@ document.getElementById(
 
 
 /* =========================
-   記録モード切り替え
-========================= */
+   Record Mode
+   ========================= */
 
 document.getElementById(
   "recSchedule"
 ).onclick=()=>{
 
   mode="schedule";
+
+  clearTimeEditor();
 
   render();
 
@@ -2256,128 +2605,201 @@ document.getElementById(
 
   mode="activity";
 
+  clearTimeEditor();
+
   render();
 
 };
 
 
 /* =========================
-   モーダルキャンセル
-========================= */
+   Time Inputs
+   ========================= */
 
 document.getElementById(
-  "modalCancel"
-).onclick=()=>{
+  "startTime"
+).addEventListener(
+  "change",
+  ()=>{
+    updateDuration();
+    updateCategoryState();
+  }
+);
 
-  pending=null;
 
-  document
-    .getElementById("modal")
-    .classList
-    .remove("open");
-
-};
+document.getElementById(
+  "endTime"
+).addEventListener(
+  "change",
+  ()=>{
+    updateDuration();
+    updateCategoryState();
+  }
+);
 
 
 /* =========================
-   時間確定
-========================= */
+   Quick Duration
+   ========================= */
 
-document.getElementById(
-  "timeConfirm"
-).onclick=()=>{
+document
+  .querySelectorAll(
+    "[data-duration]"
+  )
+  .forEach(button=>{
 
-  openCategoryStep();
+    button.onclick=()=>{
 
-};
+      const duration =
+        Number(
+          button.dataset.duration
+        );
+
+
+      let start =
+        document.getElementById(
+          "startTime"
+        ).value;
+
+
+      if(!start){
+
+        const now =
+          new Date();
+
+        const current =
+          now.getHours()*60
+          +
+          now.getMinutes();
+
+        start =
+          hh(
+            roundTo15(current)
+          );
+
+        document.getElementById(
+          "startTime"
+        ).value =
+          start;
+
+      }
+
+
+      const end =
+        (
+          mins(start)
+          +
+          duration
+        ) % 1440;
+
+
+      document.getElementById(
+        "endTime"
+      ).value =
+        hh(end);
+
+
+      updateDuration();
+
+      updateCategoryState();
+
+    };
+
+  });
 
 
 /* =========================
-   現在時刻から記録
-========================= */
+   Current Time
+   ========================= */
+
+document.getElementById(
+  "setNowStartBtn"
+).onclick=()=>{
+
+  setCurrentStart();
+
+};
+
 
 document.getElementById(
   "nowBtn"
 ).onclick=()=>{
 
-  let now=new Date();
-
-  let start=
-    now.getHours()*60+
-    now.getMinutes();
-
-
-  /*
-   * 現在時刻を15分単位に丸める
-   */
-
-  start=
-    Math.round(start/15)*15;
-
-  start=
-    start%1440;
-
-
-  let end=
-    (start+30)%1440;
-
-
-  pending={
-    start:hh(start),
-    end:hh(end)
-  };
-
-
-  openTimePicker(
-    pending.start,
-    pending.end
-  );
+  setNow30();
 
 };
 
 
 /* =========================
-   クリア
-========================= */
+   Time Confirm
+   ========================= */
+
+document.getElementById(
+  "setTimeBtn"
+).onclick=()=>{
+
+  if(
+    !validateTimeInput()
+  ){
+
+    return;
+
+  }
+
+
+  updateDuration();
+
+  updateCategoryState();
+
+
+  document
+    .getElementById(
+      "recordCategoryGrid"
+    )
+    .scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
+
+};
+
+
+/* =========================
+   Clear
+   ========================= */
 
 document.getElementById(
   "clearBtn"
 ).onclick=()=>{
 
-  pending=null;
-
-  day()[mode]=[];
-
-  save();
-
-  render();
+  clearTimeEditor();
 
 };
 
 
 /* =========================
-   確定
-========================= */
+   Confirm
+   ========================= */
 
 document.getElementById(
   "confirmBtn"
 ).onclick=()=>{
 
-  let v=
+  let v =
     validate(mode);
 
-
-  let label=
+  let label =
     mode==="schedule"
-      ?"予定"
-      :"行動";
+      ? "予定"
+      : "行動";
 
 
   if(
-    v.missing>0&&
+    v.missing>0 &&
     !confirm(
-      `24時間に${fmtDur(v.missing)}の未記録時間があります．`+
-      `このまま${label}を確定しますか？`
+      `24時間に${fmtDur(
+        v.missing
+      )}の未記録時間があります．このまま${label}を確定しますか？`
     )
   ){
 
@@ -2388,12 +2810,12 @@ document.getElementById(
 
   day().confirmed[mode]=true;
 
-  day().md[mode]=md(mode);
+  day().md[mode]=
+    md(mode);
 
   save();
 
   render();
-
 
   alert(
     `${label}を確定しました．`
@@ -2403,19 +2825,19 @@ document.getElementById(
 
 
 /* =========================
-   修正
-========================= */
+   Revise
+   ========================= */
 
 document.getElementById(
   "reviseBtn"
 ).onclick=()=>{
 
-  let what=
+  let what =
     prompt(
       "修正するデータを入力してください：予定 / 行動",
       mode==="schedule"
-        ?"予定"
-        :"行動"
+        ? "予定"
+        : "行動"
     );
 
 
@@ -2425,13 +2847,17 @@ document.getElementById(
 
     mode="schedule";
 
-  }else if(what==="行動"){
+  }
+
+  else if(what==="行動"){
 
     day().confirmed.activity=false;
 
     mode="activity";
 
-  }else{
+  }
+
+  else{
 
     return;
 
@@ -2446,8 +2872,8 @@ document.getElementById(
 
 
 /* =========================
-   エクスポート
-========================= */
+   Export
+   ========================= */
 
 document.getElementById(
   "exportSchedule"
@@ -2468,8 +2894,8 @@ document.getElementById(
 
   download(
     `schedule_${selectedDate}.md`,
-    day().md.schedule||
-    md("schedule")
+    day().md.schedule
+      || md("schedule")
   );
 
 };
@@ -2494,8 +2920,8 @@ document.getElementById(
 
   download(
     `activity_${selectedDate}.md`,
-    day().md.activity||
-    md("activity")
+    day().md.activity
+      || md("activity")
   );
 
 };
@@ -2522,41 +2948,58 @@ document.getElementById(
   "copyMd"
 ).onclick=async()=>{
 
-  let t=md(mode);
+  let t =
+    md(mode);
 
-  await navigator
-    .clipboard
-    ?.writeText(t);
+  try{
 
-  document.getElementById(
-    "exportMsg"
-  ).innerHTML=
-    `
+    await navigator.clipboard.writeText(t);
+
+    document.getElementById(
+      "exportMsg"
+    ).innerHTML =
+      `
       <div class="success">
         Markdownをコピーしました．
       </div>
-    `;
+      `;
+
+  }catch(e){
+
+    document.getElementById(
+      "exportMsg"
+    ).innerHTML =
+      `
+      <div class="error">
+        コピーに失敗しました．
+        Markdown出力を利用してください．
+      </div>
+      `;
+
+  }
 
 };
 
 
 /* =========================
-   カテゴリ追加
-========================= */
+   Add Category
+   ========================= */
 
 document.getElementById(
   "addCat"
 ).onclick=()=>{
 
-  let v=
-    document
-      .getElementById("newCat")
-      .value
-      .trim();
+  let v =
+    document.getElementById(
+      "newCat"
+    ).value.trim();
 
 
-  if(!v)
+  if(!v){
+
     return;
+
+  }
 
 
   if(
@@ -2581,15 +3024,11 @@ document.getElementById(
 
 
 /* =========================
-   初期描画
-========================= */
+   初期化
+   ========================= */
 
 render();
 
-
-/* =========================
-   Service Worker
-========================= */
 
 if(
   "serviceWorker" in navigator
@@ -2597,7 +3036,9 @@ if(
 
   navigator.serviceWorker
     .register("sw.js")
-    .catch(()=>{});
+    .catch(
+      ()=>{}
+    );
 
 }
 
