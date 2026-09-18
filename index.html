@@ -6,277 +6,2602 @@
 <meta name="theme-color" content="#111827">
 <title>24h Activity Log</title>
 <link rel="manifest" href="manifest.json">
+
 <style>
-:root{--bg:#f5f6f8;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;--accent:#111827;--danger:#dc2626;--ok:#15803d}
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.app{max-width:560px;margin:auto;min-height:100vh;padding-bottom:82px}
-header{position:sticky;top:0;z-index:5;background:rgba(245,246,248,.94);backdrop-filter:blur(12px);padding:14px 16px 10px}
-.title{font-size:20px;font-weight:750}.sub{font-size:12px;color:var(--muted);margin-top:2px}
-.datebar{display:flex;align-items:center;gap:8px;margin-top:12px}.datebar button,.iconbtn{border:0;background:var(--card);border:1px solid var(--line);border-radius:12px;height:40px;padding:0 13px;font-size:18px}
-.datebar input{flex:1;height:40px;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:0 10px;font-size:16px}
-main{padding:8px 14px}.screen{display:none}.screen.active{display:block}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin:10px 0;box-shadow:0 2px 10px rgba(0,0,0,.03)}
-.switch{display:flex;background:#eef0f3;padding:3px;border-radius:12px}.switch button{flex:1;border:0;border-radius:9px;height:38px;background:transparent;font-weight:650;color:var(--muted)}.switch button.active{background:white;color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.status{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:8px}.pill{padding:5px 9px;border-radius:999px;background:#eef0f3}.pill.ok{background:#dcfce7;color:#166534}.pill.warn{background:#fee2e2;color:#991b1b}
-.clockwrap{display:flex;justify-content:center;padding:8px 0}.clock{width:min(88vw,360px);aspect-ratio:1;position:relative;touch-action:none;user-select:none}
-.clock svg{width:100%;height:100%;overflow:visible}.clock text{font-size:12px;fill:#6b7280}.clock .center{fill:#fff;stroke:#e5e7eb}
-.hint{text-align:center;color:var(--muted);font-size:12px;margin-top:2px}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.actions button,.primary,.dangerbtn,.secondary{border:0;border-radius:12px;height:44px;font-weight:700}.primary{background:#111827;color:white;width:100%}.secondary{background:#eef0f3;color:#111827;width:100%}.dangerbtn{background:#fee2e2;color:#991b1b;width:100%}
-.notice{font-size:13px;padding:10px;border-radius:12px;background:#fff7ed;color:#9a3412;margin-top:10px}.error{color:var(--danger);font-size:13px;font-weight:650;margin-top:8px}.success{color:var(--ok);font-size:13px;font-weight:650;margin-top:8px}
-.timeline{display:flex;flex-direction:column;gap:7px}.row{display:grid;grid-template-columns:86px 1fr 52px;gap:8px;align-items:center;font-size:13px}.bar{height:30px;border-radius:8px;background:#eef0f3;position:relative;overflow:hidden}.seg{height:100%;position:absolute;border-radius:7px;display:flex;align-items:center;padding:0 8px;white-space:nowrap;overflow:hidden;font-size:11px;font-weight:650}.sum{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.sum span{font-size:12px;background:#f3f4f6;border-radius:999px;padding:5px 8px}
-.bottom{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);border-top:1px solid var(--line);padding:8px max(12px,calc((100vw - 560px)/2 + 12px));display:grid;grid-template-columns:repeat(3,1fr);gap:5px;z-index:10}.bottom button{border:0;background:transparent;color:#6b7280;padding:7px 0;font-size:11px}.bottom button.active{color:#111827;font-weight:750}.bottom .ico{display:block;font-size:20px;margin-bottom:2px}
-.category-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.cat{border:1px solid var(--line);background:white;border-radius:12px;padding:10px 6px;text-align:center;font-size:12px;font-weight:650}.cat.fixed{border-style:dashed}
-input[type=text]{width:100%;height:42px;border:1px solid var(--line);border-radius:11px;padding:0 11px;font-size:15px}
-.list{display:flex;flex-direction:column;gap:7px}.item{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:12px;padding:10px 11px}.small{font-size:12px;color:var(--muted)}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:flex-end;z-index:30}.modal.open{display:flex}.sheet{width:100%;max-width:560px;margin:auto;background:white;border-radius:20px 20px 0 0;padding:16px;max-height:80vh;overflow:auto}.sheet h3{margin:0 0 12px}.catpick{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.catpick button{height:44px;border:1px solid var(--line);background:white;border-radius:11px;font-weight:650}
-.help{font-size:12px;color:var(--muted);line-height:1.6}
+:root{
+  --bg:#f5f6f8;
+  --card:#fff;
+  --text:#111827;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --accent:#111827;
+  --danger:#dc2626;
+  --ok:#15803d
+}
+
+*{
+  box-sizing:border-box
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+}
+
+.app{
+  max-width:560px;
+  margin:auto;
+  min-height:100vh;
+  padding-bottom:82px
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:5;
+  background:rgba(245,246,248,.94);
+  backdrop-filter:blur(12px);
+  padding:14px 16px 10px
+}
+
+.title{
+  font-size:20px;
+  font-weight:750
+}
+
+.sub{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:2px
+}
+
+.datebar{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:12px
+}
+
+.datebar button,
+.iconbtn{
+  border:0;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  height:40px;
+  padding:0 13px;
+  font-size:18px
+}
+
+.datebar input{
+  flex:1;
+  height:40px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--card);
+  padding:0 10px;
+  font-size:16px
+}
+
+main{
+  padding:8px 14px
+}
+
+.screen{
+  display:none
+}
+
+.screen.active{
+  display:block
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:14px;
+  margin:10px 0;
+  box-shadow:0 2px 10px rgba(0,0,0,.03)
+}
+
+.switch{
+  display:flex;
+  background:#eef0f3;
+  padding:3px;
+  border-radius:12px
+}
+
+.switch button{
+  flex:1;
+  border:0;
+  border-radius:9px;
+  height:38px;
+  background:transparent;
+  font-weight:650;
+  color:var(--muted)
+}
+
+.switch button.active{
+  background:white;
+  color:var(--text);
+  box-shadow:0 1px 4px rgba(0,0,0,.08)
+}
+
+.status{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:13px;
+  margin-bottom:8px
+}
+
+.pill{
+  padding:5px 9px;
+  border-radius:999px;
+  background:#eef0f3
+}
+
+.pill.ok{
+  background:#dcfce7;
+  color:#166534
+}
+
+.pill.warn{
+  background:#fee2e2;
+  color:#991b1b
+}
+
+.clockwrap{
+  display:flex;
+  justify-content:center;
+  padding:8px 0
+}
+
+.clock{
+  width:min(88vw,360px);
+  aspect-ratio:1;
+  position:relative;
+  touch-action:none;
+  user-select:none
+}
+
+.clock svg{
+  width:100%;
+  height:100%;
+  overflow:visible
+}
+
+.clock text{
+  font-size:12px;
+  fill:#6b7280
+}
+
+.clock .center{
+  fill:#fff;
+  stroke:#e5e7eb
+}
+
+.hint{
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+  margin-top:2px
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:12px
+}
+
+.actions button,
+.primary,
+.dangerbtn,
+.secondary{
+  border:0;
+  border-radius:12px;
+  height:44px;
+  font-weight:700
+}
+
+.primary{
+  background:#111827;
+  color:white;
+  width:100%
+}
+
+.secondary{
+  background:#eef0f3;
+  color:#111827;
+  width:100%
+}
+
+.dangerbtn{
+  background:#fee2e2;
+  color:#991b1b;
+  width:100%
+}
+
+.notice{
+  font-size:13px;
+  padding:10px;
+  border-radius:12px;
+  background:#fff7ed;
+  color:#9a3412;
+  margin-top:10px
+}
+
+.error{
+  color:var(--danger);
+  font-size:13px;
+  font-weight:650;
+  margin-top:8px
+}
+
+.success{
+  color:var(--ok);
+  font-size:13px;
+  font-weight:650;
+  margin-top:8px
+}
+
+.timeline{
+  display:flex;
+  flex-direction:column;
+  gap:7px
+}
+
+.row{
+  display:grid;
+  grid-template-columns:86px 1fr 52px;
+  gap:8px;
+  align-items:center;
+  font-size:13px
+}
+
+.bar{
+  height:30px;
+  border-radius:8px;
+  background:#eef0f3;
+  position:relative;
+  overflow:hidden
+}
+
+.seg{
+  height:100%;
+  position:absolute;
+  border-radius:7px;
+  display:flex;
+  align-items:center;
+  padding:0 8px;
+  white-space:nowrap;
+  overflow:hidden;
+  font-size:11px;
+  font-weight:650
+}
+
+.sum{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:10px
+}
+
+.sum span{
+  font-size:12px;
+  background:#f3f4f6;
+  border-radius:999px;
+  padding:5px 8px
+}
+
+.bottom{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:rgba(255,255,255,.96);
+  border-top:1px solid var(--line);
+  padding:8px max(12px,calc((100vw - 560px)/2 + 12px));
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:5px;
+  z-index:10
+}
+
+.bottom button{
+  border:0;
+  background:transparent;
+  color:#6b7280;
+  padding:7px 0;
+  font-size:11px
+}
+
+.bottom button.active{
+  color:#111827;
+  font-weight:750
+}
+
+.bottom .ico{
+  display:block;
+  font-size:20px;
+  margin-bottom:2px
+}
+
+.category-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px
+}
+
+.cat{
+  border:1px solid var(--line);
+  background:white;
+  border-radius:12px;
+  padding:10px 6px;
+  text-align:center;
+  font-size:12px;
+  font-weight:650
+}
+
+.cat.fixed{
+  border-style:dashed
+}
+
+input[type=text]{
+  width:100%;
+  height:42px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:0 11px;
+  font-size:15px
+}
+
+.list{
+  display:flex;
+  flex-direction:column;
+  gap:7px
+}
+
+.item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px 11px
+}
+
+.small{
+  font-size:12px;
+  color:var(--muted)
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  display:none;
+  align-items:flex-end;
+  z-index:30
+}
+
+.modal.open{
+  display:flex
+}
+
+.sheet{
+  width:100%;
+  max-width:560px;
+  margin:auto;
+  background:white;
+  border-radius:20px 20px 0 0;
+  padding:16px;
+  max-height:80vh;
+  overflow:auto
+}
+
+.sheet h3{
+  margin:0 0 12px
+}
+
+.catpick{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px
+}
+
+.catpick button{
+  height:44px;
+  border:1px solid var(--line);
+  background:white;
+  border-radius:11px;
+  font-weight:650
+}
+
+/* 時間設定 */
+.time-setting{
+  margin-bottom:12px
+}
+
+.time-setting label{
+  display:block;
+  font-size:13px;
+  font-weight:650;
+  margin-bottom:6px
+}
+
+.time-setting select{
+  width:100%;
+  height:48px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:white;
+  padding:0 12px;
+  font-size:17px
+}
+
+.selected-time{
+  background:#f3f4f6;
+  border-radius:12px;
+  padding:11px;
+  margin-bottom:12px;
+  text-align:center;
+  font-weight:700
+}
+
+.help{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.6
+}
 </style>
 </head>
+
 <body>
+
 <div class="app">
+
 <header>
   <div class="title">24h Activity Log</div>
   <div class="sub">予定と行動を分離して記録する個人用ログ</div>
+
   <div class="datebar">
-    <button id="prev">‹</button><input id="date" type="date"><button id="next">›</button>
+    <button id="prev">‹</button>
+    <input id="date" type="date">
+    <button id="next">›</button>
   </div>
 </header>
 
 <main>
+
 <section id="home" class="screen active">
+
   <div class="card">
-    <div class="status"><b>ホーム</b><span id="homeStatus" class="pill">未確定</span></div>
-    <div class="switch"><button id="homeSchedule" class="active">予定</button><button id="homeActivity">行動</button></div>
-    <div class="clockwrap"><div id="homeClock" class="clock"></div></div>
+
+    <div class="status">
+      <b>ホーム</b>
+      <span id="homeStatus" class="pill">未確定</span>
+    </div>
+
+    <div class="switch">
+      <button id="homeSchedule" class="active">予定</button>
+      <button id="homeActivity">行動</button>
+    </div>
+
+    <div class="clockwrap">
+      <div id="homeClock" class="clock"></div>
+    </div>
+
     <div class="hint">選択日の24時間を可視化</div>
+
   </div>
-  <div class="card"><b>タイムライン</b><div id="homeTimeline" class="timeline" style="margin-top:10px"></div><div id="homeSummary" class="sum"></div></div>
+
+  <div class="card">
+    <b>タイムライン</b>
+    <div id="homeTimeline" class="timeline" style="margin-top:10px"></div>
+    <div id="homeSummary" class="sum"></div>
+  </div>
+
 </section>
+
 
 <section id="record" class="screen">
+
   <div class="card">
-    <div class="status"><b>記録</b><span id="recordStatus" class="pill">予定：未確定　行動：未確定</span></div>
-    <div class="switch"><button id="recSchedule" class="active">予定</button><button id="recActivity">行動</button></div>
-    <div class="clockwrap"><div id="recordClock" class="clock"></div></div>
-    <div class="hint">円周上をドラッグして時間帯を指定 → カテゴリを選択</div>
-    <div class="actions">
-      <button class="secondary" id="nowBtn">現在時刻から記録</button>
-      <button class="secondary" id="clearBtn">編集中をクリア</button>
+
+    <div class="status">
+      <b>記録</b>
+      <span id="recordStatus" class="pill">
+        予定：未確定　行動：未確定
+      </span>
     </div>
+
+    <div class="switch">
+      <button id="recSchedule" class="active">予定</button>
+      <button id="recActivity">行動</button>
+    </div>
+
+    <div class="clockwrap">
+      <div id="recordClock" class="clock"></div>
+    </div>
+
+    <div class="hint">
+      円周付近をタップして時間帯を指定
+    </div>
+
+    <div class="actions">
+      <button class="secondary" id="nowBtn">
+        現在時刻から記録
+      </button>
+
+      <button class="secondary" id="clearBtn">
+        編集中をクリア
+      </button>
+    </div>
+
     <div id="validation"></div>
+
     <div class="actions">
-      <button class="primary" id="confirmBtn">予定を確定</button>
-      <button class="secondary" id="reviseBtn">修正</button>
+      <button class="primary" id="confirmBtn">
+        予定を確定
+      </button>
+
+      <button class="secondary" id="reviseBtn">
+        修正
+      </button>
     </div>
+
   </div>
-  <div class="card"><b>現在の入力</b><div id="recordTimeline" class="timeline" style="margin-top:10px"></div></div>
+
+  <div class="card">
+    <b>現在の入力</b>
+    <div id="recordTimeline" class="timeline" style="margin-top:10px"></div>
+  </div>
+
 </section>
+
 
 <section id="data" class="screen">
+
   <div class="card">
+
     <b>データエクスポート</b>
-    <p class="help">確定済みデータをMarkdownとして出力できます．Notionへの送信はこの画面から将来接続します．</p>
-    <div class="actions"><button class="primary" id="exportSchedule">予定MD</button><button class="primary" id="exportActivity">行動MD</button></div>
-    <div class="actions"><button class="secondary" id="exportJson">JSONバックアップ</button><button class="secondary" id="copyMd">Markdownをコピー</button></div>
+
+    <p class="help">
+      確定済みデータをMarkdownとして出力できます．
+      Notionへの送信はこの画面から将来接続します．
+    </p>
+
+    <div class="actions">
+      <button class="primary" id="exportSchedule">
+        予定MD
+      </button>
+
+      <button class="primary" id="exportActivity">
+        行動MD
+      </button>
+    </div>
+
+    <div class="actions">
+      <button class="secondary" id="exportJson">
+        JSONバックアップ
+      </button>
+
+      <button class="secondary" id="copyMd">
+        Markdownをコピー
+      </button>
+    </div>
+
     <div id="exportMsg"></div>
+
   </div>
+
+
   <div class="card">
+
     <b>カテゴリ管理</b>
-    <div class="help" style="margin:6px 0 10px">睡眠・食事・入浴は固定カテゴリです．その他は自由に追加できます．</div>
-    <div class="actions"><input id="newCat" type="text" placeholder="カテゴリ名"><button class="primary" id="addCat">カテゴリ追加</button></div>
+
+    <div class="help" style="margin:6px 0 10px">
+      睡眠・食事・入浴は固定カテゴリです．
+      その他は自由に追加できます．
+    </div>
+
+    <div class="actions">
+      <input id="newCat" type="text" placeholder="カテゴリ名">
+
+      <button class="primary" id="addCat">
+        カテゴリ追加
+      </button>
+    </div>
+
     <div id="catList" class="list" style="margin-top:10px"></div>
+
   </div>
+
 </section>
+
 </main>
 
+
 <nav class="bottom">
-<button class="active" data-screen="home"><span class="ico">⌂</span>ホーム</button>
-<button data-screen="record"><span class="ico">＋</span>記録</button>
-<button data-screen="data"><span class="ico">☷</span>データ</button>
+
+  <button class="active" data-screen="home">
+    <span class="ico">⌂</span>
+    ホーム
+  </button>
+
+  <button data-screen="record">
+    <span class="ico">＋</span>
+    記録
+  </button>
+
+  <button data-screen="data">
+    <span class="ico">☷</span>
+    データ
+  </button>
+
 </nav>
 
-<div id="modal" class="modal"><div class="sheet"><h3 id="modalTitle">カテゴリを選択</h3><div id="catPick" class="catpick"></div><button class="secondary" id="modalCancel" style="margin-top:10px">キャンセル</button></div></div>
+
+<!-- 時間設定・カテゴリ選択モーダル -->
+
+<div id="modal" class="modal">
+
+  <div class="sheet">
+
+    <h3 id="modalTitle">時間を設定</h3>
+
+
+    <!-- STEP 1：時間設定 -->
+
+    <div id="timeStep">
+
+      <div class="time-setting">
+
+        <label for="startTime">
+          開始時刻
+        </label>
+
+        <select id="startTime"></select>
+
+      </div>
+
+
+      <div class="time-setting">
+
+        <label for="endTime">
+          終了時刻
+        </label>
+
+        <select id="endTime"></select>
+
+      </div>
+
+
+      <div id="timeError" class="error"></div>
+
+
+      <button
+        class="primary"
+        id="timeConfirm"
+        style="margin-top:12px"
+      >
+        時間を確定
+      </button>
+
+    </div>
+
+
+    <!-- STEP 2：カテゴリ選択 -->
+
+    <div id="categoryStep" style="display:none">
+
+      <div
+        class="selected-time"
+        id="selectedTime"
+      ></div>
+
+      <div
+        id="catPick"
+        class="catpick"
+      ></div>
+
+    </div>
+
+
+    <button
+      class="secondary"
+      id="modalCancel"
+      style="margin-top:10px"
+    >
+      キャンセル
+    </button>
+
+  </div>
+
 </div>
 
-<script>
-const FIXED=["睡眠","食事","入浴"];
-const KEY="activity_logger_v1";
-let db=JSON.parse(localStorage.getItem(KEY)||'null')||{categories:[...FIXED,"研究","就活","大学","趣味","運動","移動","休憩","家事","バイト","その他"],days:{}};
-let dateEl=document.getElementById("date"), selectedDate=new Date().toISOString().slice(0,10);
-dateEl.value=selectedDate;
-let mode="schedule", homeMode="schedule", pending=null;
 
-function save(){localStorage.setItem(KEY,JSON.stringify(db))}
-function day(){if(!db.days[selectedDate]) db.days[selectedDate]={schedule:[],activity:[],confirmed:{schedule:false,activity:false},md:{schedule:"",activity:""}}; return db.days[selectedDate]}
-function mins(t){let [h,m]=t.split(":").map(Number);return h*60+m}
-function hh(m){m=((m%1440)+1440)%1440;return String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0")}
-function dur(a,b){return b>=a?b-a:1440-a+b}
-function esc(s){return s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
-function fmtDur(x){return `${Math.floor(x/60)}:${String(x%60).padStart(2,"0")}`}
-function records(which=mode){return day()[which]||[]}
+<script>
+
+const FIXED=[
+  "睡眠",
+  "食事",
+  "入浴"
+];
+
+const KEY="activity_logger_v1";
+
+let db=
+  JSON.parse(
+    localStorage.getItem(KEY)||'null'
+  )||
+  {
+    categories:[
+      ...FIXED,
+      "研究",
+      "就活",
+      "大学",
+      "趣味",
+      "運動",
+      "移動",
+      "休憩",
+      "家事",
+      "バイト",
+      "その他"
+    ],
+    days:{}
+  };
+
+
+let dateEl=
+  document.getElementById("date");
+
+let selectedDate=
+  new Date().toISOString().slice(0,10);
+
+dateEl.value=selectedDate;
+
+
+let mode="schedule";
+
+let homeMode="schedule";
+
+let pending=null;
+
+
+/* =========================
+   基本処理
+========================= */
+
+function save(){
+
+  localStorage.setItem(
+    KEY,
+    JSON.stringify(db)
+  );
+
+}
+
+
+function day(){
+
+  if(!db.days[selectedDate]){
+
+    db.days[selectedDate]={
+      schedule:[],
+      activity:[],
+      confirmed:{
+        schedule:false,
+        activity:false
+      },
+      md:{
+        schedule:"",
+        activity:""
+      }
+    };
+
+  }
+
+  return db.days[selectedDate];
+
+}
+
+
+function mins(t){
+
+  let [h,m]=
+    t.split(":").map(Number);
+
+  return h*60+m;
+
+}
+
+
+function hh(m){
+
+  m=((m%1440)+1440)%1440;
+
+  return String(
+    Math.floor(m/60)
+  ).padStart(2,"0")
+  +":"
+  +String(
+    m%60
+  ).padStart(2,"0");
+
+}
+
+
+function dur(a,b){
+
+  return b>=a
+    ?b-a
+    :1440-a+b;
+
+}
+
+
+function esc(s){
+
+  return s
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;");
+
+}
+
+
+function fmtDur(x){
+
+  return `${Math.floor(x/60)}:${String(x%60).padStart(2,"0")}`;
+
+}
+
+
+function records(which=mode){
+
+  return day()[which]||[];
+
+}
+
+
+/* =========================
+   24時間チェック
+========================= */
 
 function validate(which=mode){
-  let r=records(which), total=0;
-  r.forEach(x=>total+=dur(x.start,x.end));
+
+  let r=records(which);
+
+  let total=0;
+
+  r.forEach(x=>{
+    total+=dur(
+      mins(x.start),
+      mins(x.end)
+    );
+  });
+
   let missing=1440-total;
-  let el=document.getElementById("validation");
-  el.innerHTML=missing>0?`<div class="error">⚠ 未記録時間があります：${fmtDur(missing)}（${total}/24:00）</div>`:`<div class="success">24時間すべて記録されています．</div>`;
-  return {total,missing};
+
+  let el=
+    document.getElementById("validation");
+
+  el.innerHTML=
+    missing>0
+      ?
+      `<div class="error">
+        ⚠ 未記録時間があります：
+        ${fmtDur(missing)}
+        （${fmtDur(total)}/24:00）
+      </div>`
+      :
+      `<div class="success">
+        24時間すべて記録されています．
+      </div>`;
+
+  return {
+    total,
+    missing
+  };
+
 }
+
+
+/* =========================
+   重複チェック
+========================= */
 
 function overlaps(list,s,e){
-  const a=mins(s), b=mins(e);
+
+  const a=mins(s);
+  const b=mins(e);
+
   return list.some(x=>{
-    const xs=mins(x.start), xe=mins(x.end);
-    const pieces=(v)=>v===0?[]:[[v,1440]];
-    if(b>a) return xs< b && xe> a;
-    return (xs<1440&&xe>a)||(xs<b&&xe>0)||(xs===0&&xe===1440);
+
+    const xs=mins(x.start);
+    const xe=mins(x.end);
+
+    if(b>a){
+
+      return xs<b && xe>a;
+
+    }
+
+    return (
+      (xs<1440&&xe>a)||
+      (xs<b&&xe>0)||
+      (xs===0&&xe===1440)
+    );
+
   });
+
 }
 
-function addRecord(start,end,category,which=mode){
-  if(start===end){alert("開始時刻と終了時刻が同じです．");return}
-  let list=records(which);
-  if(overlaps(list,start,end) && !confirm("既存の記録と重複しています．重複部分は上書きされますがよろしいですか？")) return;
-  // split all records around new interval, supporting midnight
-  let ns=mins(start), ne=mins(end);
-  let intervals=ne>ns?[[ns,ne]]:[[ns,1440],[0,ne]];
-  let out=[];
-  for(const x of list){
-    let xs=mins(x.start), xe=mins(x.end);
-    let xints=xe>xs?[[xs,xe]]:[[xs,1440],[0,xe]];
-    for(const [xa,xb] of xints){
-      let pieces=[[xa,xb]];
-      for(const [oa,ob] of intervals){
-        let next=[];
-        for(const [pa,pb] of pieces){
-          if(pb<=oa||pa>=ob) next.push([pa,pb]);
-          else { if(pa<oa) next.push([pa,oa]); if(pb>ob) next.push([ob,pb]); }
-        }
-        pieces=next;
-      }
-      for(const [pa,pb] of pieces) if(pb>pa) out.push({start:hh(pa),end:hh(pb),category:x.category});
-    }
+
+/* =========================
+   記録追加
+========================= */
+
+function addRecord(
+  start,
+  end,
+  category,
+  which=mode
+){
+
+  if(start===end){
+
+    alert(
+      "開始時刻と終了時刻が同じです．"
+    );
+
+    return;
+
   }
-  for(const [a,b] of intervals) if(b>a) out.push({start:hh(a),end:hh(b),category});
-  out.sort((a,b)=>mins(a.start)-mins(b.start));
-  day()[which]=out; save(); render();
+
+
+  let list=records(which);
+
+
+  if(
+    overlaps(list,start,end)&&
+    !confirm(
+      "既存の記録と重複しています．"+
+      "重複部分は上書きされますがよろしいですか？"
+    )
+  ){
+
+    return;
+
+  }
+
+
+  let ns=mins(start);
+  let ne=mins(end);
+
+
+  let intervals=
+    ne>ns
+      ?[[ns,ne]]
+      :[[ns,1440],[0,ne]];
+
+
+  let out=[];
+
+
+  for(const x of list){
+
+    let xs=mins(x.start);
+    let xe=mins(x.end);
+
+
+    let xints=
+      xe>xs
+        ?[[xs,xe]]
+        :[[xs,1440],[0,xe]];
+
+
+    for(const [xa,xb] of xints){
+
+      let pieces=[[xa,xb]];
+
+
+      for(const [oa,ob] of intervals){
+
+        let next=[];
+
+
+        for(const [pa,pb] of pieces){
+
+          if(
+            pb<=oa||
+            pa>=ob
+          ){
+
+            next.push([pa,pb]);
+
+          }else{
+
+            if(pa<oa)
+              next.push([pa,oa]);
+
+            if(pb>ob)
+              next.push([ob,pb]);
+
+          }
+
+        }
+
+        pieces=next;
+
+      }
+
+
+      for(
+        const [pa,pb]
+        of pieces
+      ){
+
+        if(pb>pa){
+
+          out.push({
+            start:hh(pa),
+            end:hh(pb),
+            category:x.category
+          });
+
+        }
+
+      }
+
+    }
+
+  }
+
+
+  for(
+    const [a,b]
+    of intervals
+  ){
+
+    if(b>a){
+
+      out.push({
+        start:hh(a),
+        end:hh(b),
+        category
+      });
+
+    }
+
+  }
+
+
+  out.sort(
+    (a,b)=>
+      mins(a.start)-mins(b.start)
+  );
+
+
+  day()[which]=out;
+
+  save();
+
+  render();
+
 }
+
+
+/* =========================
+   時計描画
+========================= */
 
 function svgClock(list){
-  const size=340,c=170,R=150, inner=112;
-  const palette={}; db.categories.forEach((x,i)=>palette[x]=`hsl(${(i*47)%360} 62% 58%)`);
-  const polar=(m,r=R)=>{let ang=(m/1440)*Math.PI*2-Math.PI/2;return [c+r*Math.cos(ang),c+r*Math.sin(ang)]};
-  const arc=(s,e,r1=inner,r2=R)=>{
-    let a=s,b=e;if(b<=a)b+=1440;
-    let span=b-a, large=span>720?1:0;
-    let p1=polar(a%1440,r2),p2=polar(b%1440,r2),q2=polar(b%1440,r1),q1=polar(a%1440,r1);
-    return `<path d="M ${p1} A ${r2} ${r2} 0 ${large} 1 ${p2} L ${q2} A ${r1} ${r1} 0 ${large} 0 ${q1} Z" fill="${palette[list.find(x=>mins(x.start)===a%1440)?.category]||'#d1d5db'}" opacity=".86"/>`;
+
+  const size=340;
+  const c=170;
+  const R=150;
+  const inner=112;
+
+
+  const palette={};
+
+  db.categories.forEach(
+    (x,i)=>
+      palette[x]=
+        `hsl(${(i*47)%360} 62% 58%)`
+  );
+
+
+  const polar=(
+    m,
+    r=R
+  )=>{
+
+    let ang=
+      (m/1440)*Math.PI*2
+      -Math.PI/2;
+
+    return [
+      c+r*Math.cos(ang),
+      c+r*Math.sin(ang)
+    ];
+
   };
+
+
+  const arc=(
+    s,
+    e,
+    r1=inner,
+    r2=R
+  )=>{
+
+    let a=s;
+    let b=e;
+
+    if(b<=a)
+      b+=1440;
+
+    let span=b-a;
+
+    let large=
+      span>720?1:0;
+
+    let p1=
+      polar(a%1440,r2);
+
+    let p2=
+      polar(b%1440,r2);
+
+    let q2=
+      polar(b%1440,r1);
+
+    let q1=
+      polar(a%1440,r1);
+
+
+    let category=
+      list.find(
+        x=>
+          mins(x.start)
+          ===a%1440
+      )?.category;
+
+
+    return `
+      <path
+        d="
+          M ${p1}
+          A ${r2} ${r2} 0
+          ${large} 1 ${p2}
+          L ${q2}
+          A ${r1} ${r1} 0
+          ${large} 0 ${q1}
+          Z
+        "
+        fill="${palette[category]||'#d1d5db'}"
+        opacity=".86"
+      />
+    `;
+
+  };
+
+
   let parts=[];
-  for(let i=0;i<24;i++){let p=polar(i*60,R+1),q=polar(i*60,R+10);parts.push(`<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="#9ca3af" stroke-width="${i%6===0?2:1}"/>`)}
-  for(const x of list) parts.push(arc(mins(x.start),mins(x.end)));
-  for(let i=0;i<24;i+=3){let p=polar(i*60,inner-16);parts.push(`<text x="${p[0]}" y="${p[1]+4}" text-anchor="middle">${i}</text>`)}
-  return `<svg viewBox="0 0 ${size} ${size}" aria-label="24時間グラフ"><circle cx="${c}" cy="${c}" r="${R}" fill="#fafafa" stroke="#e5e7eb"/><circle class="center" cx="${c}" cy="${c}" r="${inner}"/>${parts.join("")}<text x="${c}" y="${c-5}" text-anchor="middle" style="font-size:20px;fill:#111827;font-weight:700">${selectedDate.slice(5).replace("-","/")}</text><text x="${c}" y="${c+17}" text-anchor="middle">${list.reduce((s,x)=>s+dur(mins(x.start),mins(x.end)),0)===1440?"24:00":"記録"}</text></svg>`;
+
+
+  /* 24時間目盛 */
+
+  for(let i=0;i<24;i++){
+
+    let p=
+      polar(i*60,R+1);
+
+    let q=
+      polar(i*60,R+10);
+
+    parts.push(`
+      <line
+        x1="${p[0]}"
+        y1="${p[1]}"
+        x2="${q[0]}"
+        y2="${q[1]}"
+        stroke="#9ca3af"
+        stroke-width="${i%6===0?2:1}"
+      />
+    `);
+
+  }
+
+
+  /* 記録済み時間 */
+
+  for(const x of list){
+
+    parts.push(
+      arc(
+        mins(x.start),
+        mins(x.end)
+      )
+    );
+
+  }
+
+
+  /* 時刻表示 */
+
+  for(let i=0;i<24;i+=3){
+
+    let p=
+      polar(
+        i*60,
+        inner-16
+      );
+
+    parts.push(`
+      <text
+        x="${p[0]}"
+        y="${p[1]+4}"
+        text-anchor="middle"
+      >
+        ${i}
+      </text>
+    `);
+
+  }
+
+
+  let total=
+    list.reduce(
+      (s,x)=>
+        s+
+        dur(
+          mins(x.start),
+          mins(x.end)
+        ),
+      0
+    );
+
+
+  return `
+    <svg
+      viewBox="0 0 ${size} ${size}"
+      aria-label="24時間グラフ"
+    >
+
+      <circle
+        cx="${c}"
+        cy="${c}"
+        r="${R}"
+        fill="#fafafa"
+        stroke="#e5e7eb"
+      />
+
+      <circle
+        class="center"
+        cx="${c}"
+        cy="${c}"
+        r="${inner}"
+      />
+
+      ${parts.join("")}
+
+      <text
+        x="${c}"
+        y="${c-5}"
+        text-anchor="middle"
+        style="
+          font-size:20px;
+          fill:#111827;
+          font-weight:700
+        "
+      >
+        ${selectedDate.slice(5).replace("-","/")}
+      </text>
+
+      <text
+        x="${c}"
+        y="${c+17}"
+        text-anchor="middle"
+      >
+        ${total===1440?"24:00":"記録"}
+      </text>
+
+    </svg>
+  `;
+
 }
+
+
+/* =========================
+   時計描画
+========================= */
 
 function renderClock(){
-  document.getElementById("homeClock").innerHTML=svgClock(db.days[selectedDate]?.[homeMode]||[]);
-  const rc=document.getElementById("recordClock"); rc.innerHTML=svgClock(records(mode));
-  attachDrag(rc);
+
+  document.getElementById(
+    "homeClock"
+  ).innerHTML=
+    svgClock(
+      db.days[selectedDate]?.[homeMode]||[]
+    );
+
+
+  const rc=
+    document.getElementById(
+      "recordClock"
+    );
+
+  rc.innerHTML=
+    svgClock(
+      records(mode)
+    );
+
+
+  attachRingTap(rc);
+
 }
+
+
+/* =========================
+   円周タップ
+========================= */
+
+function attachRingTap(el){
+
+  /*
+   * SVGの実寸に合わせて座標を取得する．
+   * 時計の中心は170,170．
+   * 円の半径は150．
+   *
+   * 132〜168pxの範囲だけを
+   * タッチ可能領域とする．
+   */
+
+  const pointToMin=e=>{
+
+    const r=
+      el.getBoundingClientRect();
+
+
+    const x=
+      (e.clientX-r.left)
+      /r.width
+      *340;
+
+
+    const y=
+      (e.clientY-r.top)
+      /r.height
+      *340;
+
+
+    const dx=x-170;
+    const dy=y-170;
+
+
+    const radius=
+      Math.sqrt(
+        dx*dx+dy*dy
+      );
+
+
+    /*
+     * 円周から離れた位置は無効
+     */
+
+    if(
+      radius<132||
+      radius>168
+    ){
+
+      return null;
+
+    }
+
+
+    let a=
+      Math.atan2(dy,dx)
+      +Math.PI/2;
+
+
+    if(a<0)
+      a+=Math.PI*2;
+
+
+    /*
+     * 15分単位にスナップ
+     */
+
+    return Math.round(
+      (
+        a/
+        (Math.PI*2)*
+        1440
+      )/15
+    )*15%1440;
+
+  };
+
+
+  el.onpointerdown=e=>{
+
+    if(
+      !document
+        .getElementById("record")
+        .classList
+        .contains("active")
+    ){
+
+      return;
+
+    }
+
+
+    const m=
+      pointToMin(e);
+
+
+    /*
+     * 円周以外なら何もしない
+     */
+
+    if(m===null)
+      return;
+
+
+    e.preventDefault();
+
+
+    /*
+     * 初期値として30分後を設定
+     */
+
+    const start=hh(m);
+
+    const end=
+      hh(
+        (m+30)%1440
+      );
+
+
+    openTimePicker(
+      start,
+      end
+    );
+
+  };
+
+}
+
+
+/* =========================
+   時間選択肢
+========================= */
+
+function timeOptions(){
+
+  let html="";
+
+
+  /*
+   * 00:00〜23:45まで
+   * 15分刻み
+   */
+
+  for(
+    let m=0;
+    m<1440;
+    m+=15
+  ){
+
+    html+=`
+      <option value="${hh(m)}">
+        ${hh(m)}
+      </option>
+    `;
+
+  }
+
+
+  return html;
+
+}
+
+
+/* =========================
+   時間設定画面
+========================= */
+
+function openTimePicker(
+  start,
+  end
+){
+
+  const modal=
+    document.getElementById(
+      "modal"
+    );
+
+
+  document.getElementById(
+    "modalTitle"
+  ).textContent=
+    "時間を設定";
+
+
+  document.getElementById(
+    "timeStep"
+  ).style.display=
+    "block";
+
+
+  document.getElementById(
+    "categoryStep"
+  ).style.display=
+    "none";
+
+
+  const startEl=
+    document.getElementById(
+      "startTime"
+    );
+
+
+  const endEl=
+    document.getElementById(
+      "endTime"
+    );
+
+
+  startEl.innerHTML=
+    timeOptions();
+
+
+  endEl.innerHTML=
+    timeOptions();
+
+
+  startEl.value=start;
+  endEl.value=end;
+
+
+  document.getElementById(
+    "timeError"
+  ).textContent="";
+
+
+  modal.classList.add(
+    "open"
+  );
+
+}
+
+
+/* =========================
+   カテゴリ選択
+========================= */
+
+function openCategoryStep(){
+
+  const start=
+    document.getElementById(
+      "startTime"
+    ).value;
+
+
+  const end=
+    document.getElementById(
+      "endTime"
+    ).value;
+
+
+  if(start===end){
+
+    document.getElementById(
+      "timeError"
+    ).textContent=
+      "開始時刻と終了時刻が同じです．";
+
+    return;
+
+  }
+
+
+  pending={
+    start,
+    end
+  };
+
+
+  document.getElementById(
+    "timeStep"
+  ).style.display=
+    "none";
+
+
+  document.getElementById(
+    "categoryStep"
+  ).style.display=
+    "block";
+
+
+  document.getElementById(
+    "modalTitle"
+  ).textContent=
+    "カテゴリを選択";
+
+
+  document.getElementById(
+    "selectedTime"
+  ).textContent=
+    `${start} ～ ${end}`;
+
+
+  document.getElementById(
+    "catPick"
+  ).innerHTML=
+    db.categories
+      .map(
+        c=>
+          `<button data-cat="${esc(c)}">
+            ${esc(c)}
+          </button>`
+      )
+      .join("");
+
+
+  document
+    .querySelectorAll(
+      "#catPick button"
+    )
+    .forEach(b=>{
+
+      b.onclick=()=>{
+
+        addRecord(
+          pending.start,
+          pending.end,
+          b.dataset.cat,
+          mode
+        );
+
+
+        document
+          .getElementById("modal")
+          .classList
+          .remove("open");
+
+
+        pending=null;
+
+      };
+
+    });
+
+}
+
+
+/* =========================
+   タイムライン
+========================= */
 
 function timelineHTML(list){
-  if(!list.length) return `<div class="small">まだ記録がありません．</div>`;
-  let rows=list.map(x=>{
-    const d=dur(mins(x.start),mins(x.end));
-    const left=mins(x.start)/1440*100,width=d/1440*100;
-    return `<div class="row"><div>${x.start}–${x.end}</div><div class="bar"><div class="seg" style="left:${left}%;width:${Math.max(width,.8)}%;background:#dbeafe">${esc(x.category)}</div></div><div>${fmtDur(d)}</div></div>`;
-  }).join("");
-  let sums={};list.forEach(x=>sums[x.category]=(sums[x.category]||0)+dur(mins(x.start),mins(x.end)));
-  let sum=Object.entries(sums).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span>${esc(k)} ${fmtDur(v)}</span>`).join("");
-  return rows+`<div class="sum">${sum}</div>`;
-}
-function render(){
-  day();
-  document.getElementById("homeTimeline").innerHTML=timelineHTML(day()[homeMode]);
-  document.getElementById("recordTimeline").innerHTML=timelineHTML(records(mode));
-  document.getElementById("homeSchedule").classList.toggle("active",homeMode==="schedule");
-  document.getElementById("homeActivity").classList.toggle("active",homeMode==="activity");
-  document.getElementById("recSchedule").classList.toggle("active",mode==="schedule");
-  document.getElementById("recActivity").classList.toggle("active",mode==="activity");
-  document.getElementById("confirmBtn").textContent=(mode==="schedule"?"予定":"行動")+"を確定";
-  let d=day(), st=`予定：${d.confirmed.schedule?"確定":"未確定"}　行動：${d.confirmed.activity?"確定":"未確定"}`;
-  document.getElementById("recordStatus").textContent=st;
-  document.getElementById("homeStatus").textContent=homeMode==="schedule"?(d.confirmed.schedule?"予定：確定":"予定：未確定"):(d.confirmed.activity?"行動：確定":"行動：未確定");
-  document.getElementById("homeStatus").className="pill "+((homeMode==="schedule"?d.confirmed.schedule:d.confirmed.activity)?"ok":"");
-  validate(mode); renderCategories(); renderClock();
-}
-function attachDrag(el){
-  let start=null;
-  const pointToMin=e=>{
-    const r=el.getBoundingClientRect(),x=e.clientX-r.left-r.width/2,y=e.clientY-r.top-r.height/2;
-    let a=Math.atan2(y,x)+Math.PI/2;if(a<0)a+=Math.PI*2;
-    return Math.round((a/(Math.PI*2)*1440)/5)*5%1440;
-  };
-  el.onpointerdown=e=>{if(!document.getElementById("record").classList.contains("active"))return;start=pointToMin(e);el.setPointerCapture(e.pointerId)};
-  el.onpointerup=e=>{if(start===null)return;let end=pointToMin(e);if(end===start) end=(start+30)%1440; pending={start:hh(start),end:hh(end)}; openCats();start=null};
-}
-function openCats(){
-  document.getElementById("catPick").innerHTML=db.categories.map(c=>`<button data-cat="${esc(c)}">${esc(c)}</button>`).join("");
-  document.getElementById("modal").classList.add("open");
-  document.querySelectorAll("#catPick button").forEach(b=>b.onclick=()=>{addRecord(pending.start,pending.end,b.dataset.cat,mode);document.getElementById("modal").classList.remove("open");pending=null});
-}
-function md(which){
-  let list=day()[which], title=which==="schedule"?"Schedule":"Activity";
-  let sums={};list.forEach(x=>sums[x.category]=(sums[x.category]||0)+dur(mins(x.start),mins(x.end)));
-  return `# ${title} — ${selectedDate}\n\n## Time Log\n\n| Start | End | Duration | Category |\n|---|---|---:|---|\n`+
-    list.map(x=>`| ${x.start} | ${x.end} | ${fmtDur(dur(mins(x.start),mins(x.end)))} | ${x.category} |`).join("\n")+
-    `\n\n## Summary\n\n`+Object.entries(sums).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`- ${k}：${fmtDur(v)}`).join("\n")+"\n";
-}
-function download(name,text,type="text/markdown"){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
-function renderCategories(){
-  document.getElementById("catList").innerHTML=db.categories.map(c=>`<div class="item"><span>${esc(c)} ${FIXED.includes(c)?'<span class="small">固定</span>':''}</span>${FIXED.includes(c)?"":`<button class="dangerbtn" style="width:auto;height:32px;padding:0 10px" data-del="${esc(c)}">削除</button>`}</div>`).join("");
-  document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{db.categories=db.categories.filter(c=>c!==b.dataset.del);save();render()});
-}
-function switchScreen(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".bottom button").forEach(x=>x.classList.toggle("active",x.dataset.screen===id));render()}
 
-document.querySelectorAll(".bottom button").forEach(b=>b.onclick=()=>switchScreen(b.dataset.screen));
-document.getElementById("prev").onclick=()=>{let d=new Date(selectedDate);d.setDate(d.getDate()-1);selectedDate=d.toISOString().slice(0,10);dateEl.value=selectedDate;render()};
-document.getElementById("next").onclick=()=>{let d=new Date(selectedDate);d.setDate(d.getDate()+1);selectedDate=d.toISOString().slice(0,10);dateEl.value=selectedDate;render()};
-dateEl.onchange=()=>{selectedDate=dateEl.value;render()};
-document.getElementById("homeSchedule").onclick=()=>{homeMode="schedule";render()};
-document.getElementById("homeActivity").onclick=()=>{homeMode="activity";render()};
-document.getElementById("recSchedule").onclick=()=>{mode="schedule";render()};
-document.getElementById("recActivity").onclick=()=>{mode="activity";render()};
-document.getElementById("modalCancel").onclick=()=>{pending=null;document.getElementById("modal").classList.remove("open")};
-document.getElementById("nowBtn").onclick=()=>{
-  let now=new Date(), start=now.getHours()*60+now.getMinutes(), list=records(mode);
-  let last=list.slice().sort((a,b)=>mins(a.end)-mins(b.end)).at(-1);
-  if(last && mins(last.end)!==start && mins(last.end)>start) start=mins(last.end);
-  pending={start:hh(start),end:hh((start+30)%1440)};openCats();
+  if(!list.length){
+
+    return `
+      <div class="small">
+        まだ記録がありません．
+      </div>
+    `;
+
+  }
+
+
+  let rows=
+    list
+      .map(x=>{
+
+        const d=
+          dur(
+            mins(x.start),
+            mins(x.end)
+          );
+
+
+        const left=
+          mins(x.start)/1440*100;
+
+
+        const width=
+          d/1440*100;
+
+
+        return `
+          <div class="row">
+
+            <div>
+              ${x.start}–${x.end}
+            </div>
+
+            <div class="bar">
+
+              <div
+                class="seg"
+                style="
+                  left:${left}%;
+                  width:${Math.max(width,.8)}%;
+                  background:#dbeafe
+                "
+              >
+                ${esc(x.category)}
+              </div>
+
+            </div>
+
+            <div>
+              ${fmtDur(d)}
+            </div>
+
+          </div>
+        `;
+
+      })
+      .join("");
+
+
+  let sums={};
+
+
+  list.forEach(x=>{
+
+    sums[x.category]=
+      (sums[x.category]||0)+
+      dur(
+        mins(x.start),
+        mins(x.end)
+      );
+
+  });
+
+
+  let sum=
+    Object
+      .entries(sums)
+      .sort(
+        (a,b)=>b[1]-a[1]
+      )
+      .map(
+        ([k,v])=>
+          `<span>
+            ${esc(k)} ${fmtDur(v)}
+          </span>`
+      )
+      .join("");
+
+
+  return `
+    ${rows}
+    <div class="sum">
+      ${sum}
+    </div>
+  `;
+
+}
+
+
+/* =========================
+   全体描画
+========================= */
+
+function render(){
+
+  day();
+
+
+  document.getElementById(
+    "homeTimeline"
+  ).innerHTML=
+    timelineHTML(
+      day()[homeMode]
+    );
+
+
+  document.getElementById(
+    "recordTimeline"
+  ).innerHTML=
+    timelineHTML(
+      records(mode)
+    );
+
+
+  document.getElementById(
+    "homeSchedule"
+  ).classList.toggle(
+    "active",
+    homeMode==="schedule"
+  );
+
+
+  document.getElementById(
+    "homeActivity"
+  ).classList.toggle(
+    "active",
+    homeMode==="activity"
+  );
+
+
+  document.getElementById(
+    "recSchedule"
+  ).classList.toggle(
+    "active",
+    mode==="schedule"
+  );
+
+
+  document.getElementById(
+    "recActivity"
+  ).classList.toggle(
+    "active",
+    mode==="activity"
+  );
+
+
+  document.getElementById(
+    "confirmBtn"
+  ).textContent=
+    (mode==="schedule"
+      ?"予定"
+      :"行動")
+    +"を確定";
+
+
+  let d=day();
+
+
+  let st=
+    `予定：${
+      d.confirmed.schedule
+        ?"確定"
+        :"未確定"
+    }　行動：${
+      d.confirmed.activity
+        ?"確定"
+        :"未確定"
+    }`;
+
+
+  document.getElementById(
+    "recordStatus"
+  ).textContent=st;
+
+
+  document.getElementById(
+    "homeStatus"
+  ).textContent=
+    homeMode==="schedule"
+      ?
+      (
+        d.confirmed.schedule
+          ?"予定：確定"
+          :"予定：未確定"
+      )
+      :
+      (
+        d.confirmed.activity
+          ?"行動：確定"
+          :"行動：未確定"
+      );
+
+
+  document.getElementById(
+    "homeStatus"
+  ).className=
+    "pill "+
+    (
+      (
+        homeMode==="schedule"
+          ?d.confirmed.schedule
+          :d.confirmed.activity
+      )
+        ?"ok"
+        :""
+    );
+
+
+  validate(mode);
+
+  renderCategories();
+
+  renderClock();
+
+}
+
+
+/* =========================
+   Markdown
+========================= */
+
+function md(which){
+
+  let list=day()[which];
+
+  let title=
+    which==="schedule"
+      ?"Schedule"
+      :"Activity";
+
+
+  let sums={};
+
+
+  list.forEach(x=>{
+
+    sums[x.category]=
+      (sums[x.category]||0)+
+      dur(
+        mins(x.start),
+        mins(x.end)
+      );
+
+  });
+
+
+  return `
+# ${title} — ${selectedDate}
+
+## Time Log
+
+| Start | End | Duration | Category |
+|---|---|---:|---|
+${
+  list
+    .map(
+      x=>
+        `| ${x.start} | ${x.end} | ${fmtDur(
+          dur(
+            mins(x.start),
+            mins(x.end)
+          )
+        )} | ${x.category} |`
+    )
+    .join("\n")
+}
+
+## Summary
+
+${
+  Object
+    .entries(sums)
+    .sort(
+      (a,b)=>b[1]-a[1]
+    )
+    .map(
+      ([k,v])=>
+        `- ${k}：${fmtDur(v)}`
+    )
+    .join("\n")
+}
+`;
+
+}
+
+
+/* =========================
+   ファイル出力
+========================= */
+
+function download(
+  name,
+  text,
+  type="text/markdown"
+){
+
+  let a=
+    document.createElement("a");
+
+
+  a.href=
+    URL.createObjectURL(
+      new Blob(
+        [text],
+        {type}
+      )
+    );
+
+
+  a.download=name;
+
+  a.click();
+
+
+  setTimeout(
+    ()=>URL.revokeObjectURL(a.href),
+    1000
+  );
+
+}
+
+
+/* =========================
+   カテゴリ管理
+========================= */
+
+function renderCategories(){
+
+  document.getElementById(
+    "catList"
+  ).innerHTML=
+    db.categories
+      .map(
+        c=>
+          `<div class="item">
+
+            <span>
+              ${esc(c)}
+              ${
+                FIXED.includes(c)
+                  ?
+                  '<span class="small">固定</span>'
+                  :
+                  ''
+              }
+            </span>
+
+            ${
+              FIXED.includes(c)
+                ?
+                ""
+                :
+                `
+                  <button
+                    class="dangerbtn"
+                    style="
+                      width:auto;
+                      height:32px;
+                      padding:0 10px
+                    "
+                    data-del="${esc(c)}"
+                  >
+                    削除
+                  </button>
+                `
+            }
+
+          </div>`
+      )
+      .join("");
+
+
+  document
+    .querySelectorAll("[data-del]")
+    .forEach(b=>{
+
+      b.onclick=()=>{
+
+        db.categories=
+          db.categories.filter(
+            c=>
+              c!==b.dataset.del
+          );
+
+        save();
+
+        render();
+
+      };
+
+    });
+
+}
+
+
+/* =========================
+   画面切り替え
+========================= */
+
+function switchScreen(id){
+
+  document
+    .querySelectorAll(".screen")
+    .forEach(x=>
+      x.classList.remove("active")
+    );
+
+
+  document
+    .getElementById(id)
+    .classList.add("active");
+
+
+  document
+    .querySelectorAll(".bottom button")
+    .forEach(x=>
+      x.classList.toggle(
+        "active",
+        x.dataset.screen===id
+      )
+    );
+
+
+  render();
+
+}
+
+
+/* =========================
+   ナビゲーション
+========================= */
+
+document
+  .querySelectorAll(".bottom button")
+  .forEach(
+    b=>
+      b.onclick=
+        ()=>switchScreen(
+          b.dataset.screen
+        )
+  );
+
+
+/* =========================
+   日付変更
+========================= */
+
+document.getElementById(
+  "prev"
+).onclick=()=>{
+
+  let d=
+    new Date(selectedDate);
+
+  d.setDate(
+    d.getDate()-1
+  );
+
+  selectedDate=
+    d.toISOString().slice(0,10);
+
+  dateEl.value=
+    selectedDate;
+
+  render();
+
 };
-document.getElementById("clearBtn").onclick=()=>{pending=null;day()[mode]=[];save();render()};
-document.getElementById("confirmBtn").onclick=()=>{
-  let v=validate(mode), label=mode==="schedule"?"予定":"行動";
-  if(v.missing>0 && !confirm(`24時間に${fmtDur(v.missing)}の未記録時間があります．このまま${label}を確定しますか？`))return;
-  day().confirmed[mode]=true;day().md[mode]=md(mode);save();render();
-  alert(`${label}を確定しました．`);
+
+
+document.getElementById(
+  "next"
+).onclick=()=>{
+
+  let d=
+    new Date(selectedDate);
+
+  d.setDate(
+    d.getDate()+1
+  );
+
+  selectedDate=
+    d.toISOString().slice(0,10);
+
+  dateEl.value=
+    selectedDate;
+
+  render();
+
 };
-document.getElementById("reviseBtn").onclick=()=>{
-  let what=prompt("修正するデータを入力してください：予定 / 行動",mode==="schedule"?"予定":"行動");
-  if(what==="予定"){day().confirmed.schedule=false;mode="schedule"}
-  else if(what==="行動"){day().confirmed.activity=false;mode="activity"}
-  else return;
-  save();render();
+
+
+dateEl.onchange=()=>{
+
+  selectedDate=
+    dateEl.value;
+
+  render();
+
 };
-document.getElementById("exportSchedule").onclick=()=>{if(!day().confirmed.schedule){alert("予定が確定されていません．");return}download(`schedule_${selectedDate}.md`,day().md.schedule||md("schedule"));};
-document.getElementById("exportActivity").onclick=()=>{if(!day().confirmed.activity){alert("行動が確定されていません．");return}download(`activity_${selectedDate}.md`,day().md.activity||md("activity"));};
-document.getElementById("exportJson").onclick=()=>download(`activity_${selectedDate}.json`,JSON.stringify(day(),null,2),"application/json");
-document.getElementById("copyMd").onclick=async()=>{let t=md(mode);await navigator.clipboard?.writeText(t);document.getElementById("exportMsg").innerHTML='<div class="success">Markdownをコピーしました．</div>'};
-document.getElementById("addCat").onclick=()=>{let v=document.getElementById("newCat").value.trim();if(!v)return;if(!db.categories.includes(v))db.categories.push(v);document.getElementById("newCat").value="";save();render()};
+
+
+/* =========================
+   ホーム切り替え
+========================= */
+
+document.getElementById(
+  "homeSchedule"
+).onclick=()=>{
+
+  homeMode="schedule";
+
+  render();
+
+};
+
+
+document.getElementById(
+  "homeActivity"
+).onclick=()=>{
+
+  homeMode="activity";
+
+  render();
+
+};
+
+
+/* =========================
+   記録モード切り替え
+========================= */
+
+document.getElementById(
+  "recSchedule"
+).onclick=()=>{
+
+  mode="schedule";
+
+  render();
+
+};
+
+
+document.getElementById(
+  "recActivity"
+).onclick=()=>{
+
+  mode="activity";
+
+  render();
+
+};
+
+
+/* =========================
+   モーダルキャンセル
+========================= */
+
+document.getElementById(
+  "modalCancel"
+).onclick=()=>{
+
+  pending=null;
+
+  document
+    .getElementById("modal")
+    .classList
+    .remove("open");
+
+};
+
+
+/* =========================
+   時間確定
+========================= */
+
+document.getElementById(
+  "timeConfirm"
+).onclick=()=>{
+
+  openCategoryStep();
+
+};
+
+
+/* =========================
+   現在時刻から記録
+========================= */
+
+document.getElementById(
+  "nowBtn"
+).onclick=()=>{
+
+  let now=new Date();
+
+  let start=
+    now.getHours()*60+
+    now.getMinutes();
+
+
+  /*
+   * 現在時刻を15分単位に丸める
+   */
+
+  start=
+    Math.round(start/15)*15;
+
+  start=
+    start%1440;
+
+
+  let end=
+    (start+30)%1440;
+
+
+  pending={
+    start:hh(start),
+    end:hh(end)
+  };
+
+
+  openTimePicker(
+    pending.start,
+    pending.end
+  );
+
+};
+
+
+/* =========================
+   クリア
+========================= */
+
+document.getElementById(
+  "clearBtn"
+).onclick=()=>{
+
+  pending=null;
+
+  day()[mode]=[];
+
+  save();
+
+  render();
+
+};
+
+
+/* =========================
+   確定
+========================= */
+
+document.getElementById(
+  "confirmBtn"
+).onclick=()=>{
+
+  let v=
+    validate(mode);
+
+
+  let label=
+    mode==="schedule"
+      ?"予定"
+      :"行動";
+
+
+  if(
+    v.missing>0&&
+    !confirm(
+      `24時間に${fmtDur(v.missing)}の未記録時間があります．`+
+      `このまま${label}を確定しますか？`
+    )
+  ){
+
+    return;
+
+  }
+
+
+  day().confirmed[mode]=true;
+
+  day().md[mode]=md(mode);
+
+  save();
+
+  render();
+
+
+  alert(
+    `${label}を確定しました．`
+  );
+
+};
+
+
+/* =========================
+   修正
+========================= */
+
+document.getElementById(
+  "reviseBtn"
+).onclick=()=>{
+
+  let what=
+    prompt(
+      "修正するデータを入力してください：予定 / 行動",
+      mode==="schedule"
+        ?"予定"
+        :"行動"
+    );
+
+
+  if(what==="予定"){
+
+    day().confirmed.schedule=false;
+
+    mode="schedule";
+
+  }else if(what==="行動"){
+
+    day().confirmed.activity=false;
+
+    mode="activity";
+
+  }else{
+
+    return;
+
+  }
+
+
+  save();
+
+  render();
+
+};
+
+
+/* =========================
+   エクスポート
+========================= */
+
+document.getElementById(
+  "exportSchedule"
+).onclick=()=>{
+
+  if(
+    !day().confirmed.schedule
+  ){
+
+    alert(
+      "予定が確定されていません．"
+    );
+
+    return;
+
+  }
+
+
+  download(
+    `schedule_${selectedDate}.md`,
+    day().md.schedule||
+    md("schedule")
+  );
+
+};
+
+
+document.getElementById(
+  "exportActivity"
+).onclick=()=>{
+
+  if(
+    !day().confirmed.activity
+  ){
+
+    alert(
+      "行動が確定されていません．"
+    );
+
+    return;
+
+  }
+
+
+  download(
+    `activity_${selectedDate}.md`,
+    day().md.activity||
+    md("activity")
+  );
+
+};
+
+
+document.getElementById(
+  "exportJson"
+).onclick=()=>{
+
+  download(
+    `activity_${selectedDate}.json`,
+    JSON.stringify(
+      day(),
+      null,
+      2
+    ),
+    "application/json"
+  );
+
+};
+
+
+document.getElementById(
+  "copyMd"
+).onclick=async()=>{
+
+  let t=md(mode);
+
+  await navigator
+    .clipboard
+    ?.writeText(t);
+
+  document.getElementById(
+    "exportMsg"
+  ).innerHTML=
+    `
+      <div class="success">
+        Markdownをコピーしました．
+      </div>
+    `;
+
+};
+
+
+/* =========================
+   カテゴリ追加
+========================= */
+
+document.getElementById(
+  "addCat"
+).onclick=()=>{
+
+  let v=
+    document
+      .getElementById("newCat")
+      .value
+      .trim();
+
+
+  if(!v)
+    return;
+
+
+  if(
+    !db.categories.includes(v)
+  ){
+
+    db.categories.push(v);
+
+  }
+
+
+  document.getElementById(
+    "newCat"
+  ).value="";
+
+
+  save();
+
+  render();
+
+};
+
+
+/* =========================
+   初期描画
+========================= */
+
 render();
-if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+
+
+/* =========================
+   Service Worker
+========================= */
+
+if(
+  "serviceWorker" in navigator
+){
+
+  navigator.serviceWorker
+    .register("sw.js")
+    .catch(()=>{});
+
+}
+
 </script>
+
 </body>
 </html>
