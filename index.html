@@ -175,12 +175,6 @@ main{
   user-select:none;
 }
 
-/*
-  重要：
-  時計は完全に表示専用．
-  pointer-events:none にすることで，
-  円をタップ・ドラッグしても何も起こらない．
-*/
 .clock svg{
   width:100%;
   height:100%;
@@ -203,6 +197,34 @@ main{
   color:var(--muted);
   font-size:12px;
   margin-top:2px;
+}
+
+/* =========================
+   カテゴリ凡例
+   ========================= */
+
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:6px 10px;
+  margin:6px 4px 2px;
+}
+
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  font-size:11px;
+  color:#4b5563;
+  white-space:nowrap;
+}
+
+.legend-color{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  flex:none;
 }
 
 /* =========================
@@ -317,6 +339,10 @@ main{
   grid-template-columns:1fr 1fr;
   gap:8px;
   margin-top:10px;
+}
+
+.time-actions button{
+  font-size:12px;
 }
 
 /* =========================
@@ -618,6 +644,9 @@ input[type=text]{
       <div id="homeClock" class="clock"></div>
     </div>
 
+    <!-- 追加：カテゴリ凡例 -->
+    <div id="homeLegend" class="legend"></div>
+
     <div class="hint">
       選択日の24時間を可視化
     </div>
@@ -627,9 +656,10 @@ input[type=text]{
   <div class="card">
     <b>タイムライン</b>
 
-    <div id="homeTimeline"
-         class="timeline"
-         style="margin-top:10px">
+    <div
+      id="homeTimeline"
+      class="timeline"
+      style="margin-top:10px">
     </div>
 
     <div id="homeSummary" class="sum"></div>
@@ -648,6 +678,7 @@ input[type=text]{
 
     <div class="status">
       <b>記録</b>
+
       <span id="recordStatus" class="pill">
         予定：未確定　行動：未確定
       </span>
@@ -664,6 +695,9 @@ input[type=text]{
     <div class="clockwrap">
       <div id="recordClock" class="clock"></div>
     </div>
+
+    <!-- 追加：カテゴリ凡例 -->
+    <div id="recordLegend" class="legend"></div>
 
     <div class="hint">
       円グラフは表示専用です．時間は下から設定します
@@ -684,6 +718,7 @@ input[type=text]{
 
         <label class="time-field">
           <span>開始</span>
+
           <input
             id="startTime"
             class="time-input"
@@ -691,21 +726,25 @@ input[type=text]{
             step="900">
         </label>
 
-        <div class="time-arrow">→</div>
+        <div class="time-arrow">
+          →
+        </div>
 
         <label class="time-field">
           <span>終了</span>
+
           <input
             id="endTime"
             class="time-input"
             type="time"
-            step="900">
+            step="60">
         </label>
 
       </div>
 
 
       <div class="duration-box">
+
         <span class="duration-label">
           記録時間
         </span>
@@ -713,8 +752,9 @@ input[type=text]{
         <strong
           id="selectedDuration"
           class="duration-value">
-          0:30
+          未設定
         </strong>
+
       </div>
 
 
@@ -724,10 +764,21 @@ input[type=text]{
 
       <div class="quick-times">
 
-        <button data-duration="15">15分</button>
-        <button data-duration="30">30分</button>
-        <button data-duration="60">1時間</button>
-        <button data-duration="120">2時間</button>
+        <button data-duration="15">
+          15分
+        </button>
+
+        <button data-duration="30">
+          30分
+        </button>
+
+        <button data-duration="60">
+          1時間
+        </button>
+
+        <button data-duration="120">
+          2時間
+        </button>
 
       </div>
 
@@ -740,13 +791,32 @@ input[type=text]{
           現在時刻を開始に
         </button>
 
+        <!-- 追加：現在時刻を終了に -->
+        <button
+          class="secondary"
+          id="setNowEndBtn">
+          現在時刻を終了に
+        </button>
+
+      </div>
+
+
+      <div class="actions">
+
         <button
           class="primary"
           id="setTimeBtn">
           時間を決定
         </button>
 
+        <button
+          class="secondary"
+          id="nowBtn">
+          現在時刻から30分
+        </button>
+
       </div>
+
 
       <div id="timeError"></div>
 
@@ -797,8 +867,8 @@ input[type=text]{
 
       <button
         class="secondary"
-        id="nowBtn">
-        現在時刻から30分
+        id="reviseBtn">
+        修正
       </button>
 
     </div>
@@ -813,12 +883,6 @@ input[type=text]{
         class="primary"
         id="confirmBtn">
         予定を確定
-      </button>
-
-      <button
-        class="secondary"
-        id="reviseBtn">
-        修正
       </button>
 
     </div>
@@ -857,23 +921,35 @@ input[type=text]{
     </p>
 
     <div class="actions">
-      <button class="primary" id="exportSchedule">
+
+      <button
+        class="primary"
+        id="exportSchedule">
         予定MD
       </button>
 
-      <button class="primary" id="exportActivity">
+      <button
+        class="primary"
+        id="exportActivity">
         行動MD
       </button>
+
     </div>
 
     <div class="actions">
-      <button class="secondary" id="exportJson">
+
+      <button
+        class="secondary"
+        id="exportJson">
         JSONバックアップ
       </button>
 
-      <button class="secondary" id="copyMd">
+      <button
+        class="secondary"
+        id="copyMd">
         Markdownをコピー
       </button>
+
     </div>
 
     <div id="exportMsg"></div>
@@ -929,20 +1005,26 @@ input[type=text]{
   <button
     class="active"
     data-screen="home">
+
     <span class="ico">⌂</span>
     ホーム
+
   </button>
 
   <button
     data-screen="record">
+
     <span class="ico">＋</span>
     記録
+
   </button>
 
   <button
     data-screen="data">
+
     <span class="ico">☷</span>
     データ
+
   </button>
 
 </nav>
@@ -958,7 +1040,8 @@ const FIXED = [
   "入浴"
 ];
 
-const KEY = "activity_logger_v1";
+const KEY =
+  "activity_logger_v1";
 
 
 let db =
@@ -987,24 +1070,32 @@ let db =
    日付
    ========================= */
 
-function localDateString(d=new Date()){
+function localDateString(
+  d=new Date()
+){
 
-  const y = d.getFullYear();
+  const y =
+    d.getFullYear();
 
   const m =
-    String(d.getMonth()+1)
-      .padStart(2,"0");
+    String(
+      d.getMonth()+1
+    ).padStart(2,"0");
 
   const day =
-    String(d.getDate())
-      .padStart(2,"0");
+    String(
+      d.getDate()
+    ).padStart(2,"0");
 
   return `${y}-${m}-${day}`;
+
 }
 
 
 let dateEl =
-  document.getElementById("date");
+  document.getElementById(
+    "date"
+  );
 
 let selectedDate =
   localDateString();
@@ -1017,11 +1108,14 @@ dateEl.value =
    状態
    ========================= */
 
-let mode = "schedule";
+let mode =
+  "schedule";
 
-let homeMode = "schedule";
+let homeMode =
+  "schedule";
 
-let pending = null;
+let pending =
+  null;
 
 
 /* =========================
@@ -1040,7 +1134,9 @@ function save(){
 
 function day(){
 
-  if(!db.days[selectedDate]){
+  if(
+    !db.days[selectedDate]
+  ){
 
     db.days[selectedDate] = {
 
@@ -1068,7 +1164,10 @@ function day(){
 
 function mins(t){
 
-  let [h,m] =
+  let [
+    h,
+    m
+  ] =
     t.split(":").map(Number);
 
   return h*60+m;
@@ -1079,16 +1178,20 @@ function mins(t){
 function hh(m){
 
   m =
-    ((m%1440)+1440)%1440;
+    (
+      (m%1440)+1440
+    )%1440;
 
   return (
-    String(Math.floor(m/60))
-      .padStart(2,"0")
+    String(
+      Math.floor(m/60)
+    ).padStart(2,"0")
     +
     ":"
     +
-    String(m%60)
-      .padStart(2,"0")
+    String(
+      m%60
+    ).padStart(2,"0")
   );
 
 }
@@ -1106,9 +1209,18 @@ function dur(a,b){
 function esc(s){
 
   return s
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;");
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    );
 
 }
 
@@ -1123,9 +1235,147 @@ function fmtDur(x){
 }
 
 
-function records(which=mode){
+function records(
+  which=mode
+){
 
   return day()[which] || [];
+
+}
+
+
+/* =========================
+   カテゴリカラー
+   ========================= */
+
+function categoryColor(
+  category
+){
+
+  const index =
+    db.categories.indexOf(
+      category
+    );
+
+  if(index<0){
+
+    return "#d1d5db";
+
+  }
+
+  return `
+    hsl(
+      ${(index*47)%360}
+      62%
+      58%
+    )
+  `;
+
+}
+
+
+/* =========================
+   カテゴリ凡例
+   ========================= */
+
+function renderLegend(){
+
+  const targets = [
+
+    {
+      id:"homeLegend",
+      list:
+        db.days[selectedDate]?.[
+          homeMode
+        ] || []
+    },
+
+    {
+      id:"recordLegend",
+      list:
+        records(mode)
+    }
+
+  ];
+
+
+  targets.forEach(
+    ({id,list})=>{
+
+      const el =
+        document.getElementById(
+          id
+        );
+
+      if(!el){
+
+        return;
+
+      }
+
+
+      /*
+       * その日の記録に存在するカテゴリだけを表示．
+       * 記録がないカテゴリまで大量に表示しない．
+       */
+      const used =
+        [];
+
+      list.forEach(
+        x=>{
+
+          if(
+            !used.includes(
+              x.category
+            )
+          ){
+
+            used.push(
+              x.category
+            );
+
+          }
+
+        }
+      );
+
+
+      if(!used.length){
+
+        el.innerHTML = "";
+
+        return;
+
+      }
+
+
+      el.innerHTML =
+        used
+          .map(
+            category=>
+              `
+              <div class="legend-item">
+
+                <span
+                  class="legend-color"
+                  style="
+                    background:${categoryColor(
+                      category
+                    )}
+                  ">
+                </span>
+
+                <span>
+                  ${esc(category)}
+                </span>
+
+              </div>
+              `
+          )
+          .join("");
+
+    }
+  );
 
 }
 
@@ -1144,32 +1394,50 @@ function roundTo15(m){
 function updateDuration(){
 
   const start =
-    document.getElementById("startTime").value;
+    document.getElementById(
+      "startTime"
+    ).value;
 
   const end =
-    document.getElementById("endTime").value;
+    document.getElementById(
+      "endTime"
+    ).value;
 
   const durationEl =
-    document.getElementById("selectedDuration");
+    document.getElementById(
+      "selectedDuration"
+    );
 
-  if(!start || !end){
 
-    durationEl.textContent = "未設定";
+  if(
+    !start ||
+    !end
+  ){
+
+    durationEl.textContent =
+      "未設定";
 
     return false;
 
   }
 
+
   const duration =
-    dur(mins(start),mins(end));
+    dur(
+      mins(start),
+      mins(end)
+    );
+
 
   if(duration===0){
 
-    durationEl.textContent = "0:00";
+    durationEl.textContent =
+      "0:00";
 
     return false;
 
   }
+
 
   durationEl.textContent =
     fmtDur(duration);
@@ -1182,37 +1450,56 @@ function updateDuration(){
 function validateTimeInput(){
 
   const start =
-    document.getElementById("startTime").value;
+    document.getElementById(
+      "startTime"
+    ).value;
 
   const end =
-    document.getElementById("endTime").value;
+    document.getElementById(
+      "endTime"
+    ).value;
 
   const errorEl =
-    document.getElementById("timeError");
+    document.getElementById(
+      "timeError"
+    );
 
-  if(!start || !end){
+
+  if(
+    !start ||
+    !end
+  ){
 
     errorEl.innerHTML =
-      `<div class="error">
+      `
+      <div class="error">
         開始時刻と終了時刻を入力してください．
-      </div>`;
+      </div>
+      `;
 
     return false;
 
   }
 
-  if(start===end){
+
+  if(
+    start===end
+  ){
 
     errorEl.innerHTML =
-      `<div class="error">
+      `
+      <div class="error">
         開始時刻と終了時刻を別々に設定してください．
-      </div>`;
+      </div>
+      `;
 
     return false;
 
   }
 
-  errorEl.innerHTML = "";
+
+  errorEl.innerHTML =
+    "";
 
   return true;
 
@@ -1222,10 +1509,14 @@ function validateTimeInput(){
 function updateCategoryState(){
 
   const start =
-    document.getElementById("startTime").value;
+    document.getElementById(
+      "startTime"
+    ).value;
 
   const end =
-    document.getElementById("endTime").value;
+    document.getElementById(
+      "endTime"
+    ).value;
 
   const grid =
     document.getElementById(
@@ -1242,7 +1533,12 @@ function updateCategoryState(){
       "categoryState"
     );
 
-  if(!start || !end || start===end){
+
+  if(
+    !start ||
+    !end ||
+    start===end
+  ){
 
     grid.classList.add(
       "category-disabled"
@@ -1254,11 +1550,13 @@ function updateCategoryState(){
     selected.textContent =
       "先に時間を設定してください";
 
-    pending = null;
+    pending =
+      null;
 
     return;
 
   }
+
 
   grid.classList.remove(
     "category-disabled"
@@ -1267,10 +1565,17 @@ function updateCategoryState(){
   state.textContent =
     "選択できます";
 
+
   selected.textContent =
-    `${start} → ${end}　（${fmtDur(
-      dur(mins(start),mins(end))
-    )}）`;
+    `${start} → ${end}　（${
+      fmtDur(
+        dur(
+          mins(start),
+          mins(end)
+        )
+      )
+    }）`;
+
 
   pending = {
     start,
@@ -1290,21 +1595,67 @@ function setCurrentStart(){
     new Date();
 
   const current =
-    now.getHours()*60 +
+    now.getHours()*60
+    +
     now.getMinutes();
 
+
+  /*
+   * 開始時刻は15分単位に丸める
+   */
   const start =
-    roundTo15(current);
+    roundTo15(
+      current
+    );
+
 
   document.getElementById(
     "startTime"
-  ).value = hh(start);
+  ).value =
+    hh(start);
+
 
   document.getElementById(
     "endTime"
-  ).value = hh((start+30)%1440);
+  ).value =
+    hh(
+      (start+30)%1440
+    );
+
 
   updateDuration();
+
+  updateCategoryState();
+
+}
+
+
+/*
+ * 追加：
+ * 現在時刻を終了時間に設定する．
+ *
+ * こちらは実際の終了時刻を残したいので，
+ * 15分単位には丸めず分単位で設定する．
+ */
+function setCurrentEnd(){
+
+  const now =
+    new Date();
+
+  const current =
+    now.getHours()*60
+    +
+    now.getMinutes();
+
+
+  document.getElementById(
+    "endTime"
+  ).value =
+    hh(current);
+
+
+  updateDuration();
+
   updateCategoryState();
 
 }
@@ -1321,35 +1672,58 @@ function setNow30(){
    重複処理
    ========================= */
 
-function overlaps(list,s,e){
+function overlaps(
+  list,
+  s,
+  e
+){
 
-  const a = mins(s);
-  const b = mins(e);
+  const a =
+    mins(s);
 
-  return list.some(x=>{
+  const b =
+    mins(e);
 
-    const xs = mins(x.start);
-    const xe = mins(x.end);
 
-    const newIntervals =
-      b>a
-        ? [[a,b]]
-        : [[a,1440],[0,b]];
+  return list.some(
+    x=>{
 
-    const oldIntervals =
-      xe>xs
-        ? [[xs,xe]]
-        : [[xs,1440],[0,xe]];
+      const xs =
+        mins(x.start);
 
-    return newIntervals.some(
-      ([na,nb]) =>
-        oldIntervals.some(
-          ([oa,ob]) =>
-            na<ob && nb>oa
-        )
-    );
+      const xe =
+        mins(x.end);
 
-  });
+
+      const newIntervals =
+        b>a
+          ? [[a,b]]
+          : [
+              [a,1440],
+              [0,b]
+            ];
+
+
+      const oldIntervals =
+        xe>xs
+          ? [[xs,xe]]
+          : [
+              [xs,1440],
+              [0,xe]
+            ];
+
+
+      return newIntervals.some(
+        ([na,nb])=>
+          oldIntervals.some(
+            ([oa,ob])=>
+              na<ob &&
+              nb>oa
+          )
+      );
+
+    }
+  );
 
 }
 
@@ -1365,7 +1739,9 @@ function addRecord(
   which=mode
 ){
 
-  if(start===end){
+  if(
+    start===end
+  ){
 
     alert(
       "開始時刻と終了時刻が同じです．"
@@ -1402,13 +1778,20 @@ function addRecord(
   }
 
 
-  const ns = mins(start);
-  const ne = mins(end);
+  const ns =
+    mins(start);
+
+  const ne =
+    mins(end);
+
 
   const intervals =
     ne>ns
       ? [[ns,ne]]
-      : [[ns,1440],[0,ne]];
+      : [
+          [ns,1440],
+          [0,ne]
+        ];
 
 
   let out=[];
@@ -1418,13 +1801,20 @@ function addRecord(
     const x of list
   ){
 
-    const xs = mins(x.start);
-    const xe = mins(x.end);
+    const xs =
+      mins(x.start);
+
+    const xe =
+      mins(x.end);
+
 
     const xints =
       xe>xs
         ? [[xs,xe]]
-        : [[xs,1440],[0,xe]];
+        : [
+            [xs,1440],
+            [0,xe]
+          ];
 
 
     for(
@@ -1492,13 +1882,20 @@ function addRecord(
         of pieces
       ){
 
-        if(pb>pa){
+        if(
+          pb>pa
+        ){
 
           out.push({
 
-            start:hh(pa),
-            end:hh(pb),
-            category:x.category
+            start:
+              hh(pa),
+
+            end:
+              hh(pb),
+
+            category:
+              x.category
 
           });
 
@@ -1516,12 +1913,18 @@ function addRecord(
     of intervals
   ){
 
-    if(b>a){
+    if(
+      b>a
+    ){
 
       out.push({
 
-        start:hh(a),
-        end:hh(b),
+        start:
+          hh(a),
+
+        end:
+          hh(b),
+
         category
 
       });
@@ -1533,12 +1936,15 @@ function addRecord(
 
   out.sort(
     (a,b)=>
-      mins(a.start)-mins(b.start)
+      mins(a.start)
+      -
+      mins(b.start)
   );
 
 
   day()[which] =
     out;
+
 
   save();
 
@@ -1553,23 +1959,30 @@ function addRecord(
    時計描画
    ========================= */
 
-function svgClock(list){
+function svgClock(
+  list
+){
 
-  const size = 340;
+  const size =
+    340;
 
-  const c = 170;
+  const c =
+    170;
 
-  const R = 150;
+  const R =
+    150;
 
-  const inner = 112;
+  const inner =
+    112;
 
 
   const palette = {};
 
+
   db.categories.forEach(
     (x,i)=>
       palette[x] =
-        `hsl(${(i*47)%360} 62% 58%)`
+        categoryColor(x)
   );
 
 
@@ -1577,14 +1990,22 @@ function svgClock(list){
     (m,r=R)=>{
 
       const ang =
-        (m/1440)*Math.PI*2
-        -Math.PI/2;
+        (m/1440)
+        *
+        Math.PI*2
+        -
+        Math.PI/2;
+
 
       return [
 
-        c+r*Math.cos(ang),
+        c+
+        r*
+        Math.cos(ang),
 
-        c+r*Math.sin(ang)
+        c+
+        r*
+        Math.sin(ang)
 
       ];
 
@@ -1599,11 +2020,16 @@ function svgClock(list){
       r2=R
     )=>{
 
-      let a=s;
+      let a =
+        s;
 
-      let b=e;
+      let b =
+        e;
 
-      if(b<=a){
+
+      if(
+        b<=a
+      ){
 
         b+=1440;
 
@@ -1613,8 +2039,11 @@ function svgClock(list){
       const span =
         b-a;
 
+
       const large =
-        span>720 ? 1 : 0;
+        span>720
+          ? 1
+          : 0;
 
 
       const p1 =
@@ -1644,7 +2073,7 @@ function svgClock(list){
 
       const record =
         list.find(
-          x =>
+          x=>
             mins(x.start)
             ===
             a%1440
@@ -1658,6 +2087,7 @@ function svgClock(list){
 
 
       return `
+
         <path
           d="
             M ${p1}
@@ -1670,10 +2100,12 @@ function svgClock(list){
           "
           fill="${
             palette[category]
-            || "#d1d5db"
+            ||
+            "#d1d5db"
           }"
           opacity=".86"
         />
+
       `;
 
     };
@@ -1689,13 +2121,20 @@ function svgClock(list){
   ){
 
     const p =
-      polar(i*60,R+1);
+      polar(
+        i*60,
+        R+1
+      );
 
     const q =
-      polar(i*60,R+10);
+      polar(
+        i*60,
+        R+10
+      );
 
 
     parts.push(`
+
       <line
         x1="${p[0]}"
         y1="${p[1]}"
@@ -1703,9 +2142,12 @@ function svgClock(list){
         y2="${q[1]}"
         stroke="#9ca3af"
         stroke-width="${
-          i%6===0 ? 2 : 1
+          i%6===0
+            ? 2
+            : 1
         }"
       />
+
     `);
 
   }
@@ -1739,12 +2181,16 @@ function svgClock(list){
 
 
     parts.push(`
+
       <text
         x="${p[0]}"
         y="${p[1]+4}"
         text-anchor="middle">
+
         ${i}
+
       </text>
+
     `);
 
   }
@@ -1782,9 +2228,11 @@ function svgClock(list){
           fill:#111827;
           font-weight:700;
         ">
+
         ${selectedDate
           .slice(5)
           .replace("-","/")}
+
       </text>
 
       <text
@@ -1841,9 +2289,13 @@ function renderClock(){
    タイムライン
    ========================= */
 
-function timelineHTML(list){
+function timelineHTML(
+  list
+){
 
-  if(!list.length){
+  if(
+    !list.length
+  ){
 
     return `
       <div class="small">
@@ -1855,71 +2307,95 @@ function timelineHTML(list){
 
 
   let rows =
-    list.map(x=>{
+    list
+      .map(
+        x=>{
 
-      const d =
-        dur(
-          mins(x.start),
-          mins(x.end)
-        );
-
-      const left =
-        mins(x.start)/1440*100;
-
-      const width =
-        d/1440*100;
+          const d =
+            dur(
+              mins(x.start),
+              mins(x.end)
+            );
 
 
-      return `
+          const left =
+            mins(x.start)
+            /
+            1440
+            *
+            100;
 
-        <div class="row">
 
-          <div>
-            ${x.start}–${x.end}
-          </div>
+          const width =
+            d
+            /
+            1440
+            *
+            100;
 
-          <div class="bar">
 
-            <div
-              class="seg"
-              style="
-                left:${left}%;
-                width:${Math.max(width,.8)}%;
-                background:#dbeafe
-              ">
+          return `
 
-              ${esc(x.category)}
+            <div class="row">
+
+              <div>
+                ${x.start}–${x.end}
+              </div>
+
+              <div class="bar">
+
+                <div
+                  class="seg"
+                  style="
+                    left:${left}%;
+                    width:${Math.max(
+                      width,
+                      .8
+                    )}%;
+                    background:${categoryColor(
+                      x.category
+                    )}
+                  ">
+
+                  ${esc(x.category)}
+
+                </div>
+
+              </div>
+
+              <div>
+                ${fmtDur(d)}
+              </div>
 
             </div>
 
-          </div>
+          `;
 
-          <div>
-            ${fmtDur(d)}
-          </div>
-
-        </div>
-
-      `;
-
-    })
-    .join("");
+        }
+      )
+      .join("");
 
 
   let sums={};
 
 
-  list.forEach(x=>{
+  list.forEach(
+    x=>{
 
-    sums[x.category] =
-      (sums[x.category]||0)
-      +
-      dur(
-        mins(x.start),
-        mins(x.end)
-      );
+      sums[x.category] =
+        (
+          sums[x.category]
+          ||
+          0
+        )
+        +
+        dur(
+          mins(x.start),
+          mins(x.end)
+        );
 
-  });
+    }
+  );
 
 
   let sum =
@@ -1930,10 +2406,12 @@ function timelineHTML(list){
       )
       .map(
         ([k,v])=>
-          `<span>
+          `
+          <span>
             ${esc(k)}
             ${fmtDur(v)}
-          </span>`
+          </span>
+          `
       )
       .join("");
 
@@ -1963,6 +2441,7 @@ function renderRecordCategories(){
       .map(
         c=>
           `
+
           <button
             class="cat ${
               FIXED.includes(c)
@@ -1974,6 +2453,7 @@ function renderRecordCategories(){
             ${esc(c)}
 
           </button>
+
           `
       )
       .join("");
@@ -1983,42 +2463,44 @@ function renderRecordCategories(){
     .querySelectorAll(
       "[data-record-cat]"
     )
-    .forEach(button=>{
+    .forEach(
+      button=>{
 
-      button.onclick=()=>{
+        button.onclick=()=>{
 
-        const start =
-          document.getElementById(
-            "startTime"
-          ).value;
+          const start =
+            document.getElementById(
+              "startTime"
+            ).value;
 
-        const end =
-          document.getElementById(
-            "endTime"
-          ).value;
-
-
-        if(
-          !start ||
-          !end ||
-          start===end
-        ){
-
-          return;
-
-        }
+          const end =
+            document.getElementById(
+              "endTime"
+            ).value;
 
 
-        addRecord(
-          start,
-          end,
-          button.dataset.recordCat,
-          mode
-        );
+          if(
+            !start ||
+            !end ||
+            start===end
+          ){
 
-      };
+            return;
 
-    });
+          }
+
+
+          addRecord(
+            start,
+            end,
+            button.dataset.recordCat,
+            mode
+          );
+
+        };
+
+      }
+    );
 
 }
 
@@ -2033,19 +2515,26 @@ function clearTimeEditor(){
     "startTime"
   ).value="";
 
+
   document.getElementById(
     "endTime"
   ).value="";
 
+
   document.getElementById(
     "selectedDuration"
-  ).textContent="未設定";
+  ).textContent=
+    "未設定";
+
 
   document.getElementById(
     "timeError"
   ).innerHTML="";
 
-  pending=null;
+
+  pending =
+    null;
+
 
   updateCategoryState();
 
@@ -2121,7 +2610,8 @@ function render(){
     "を確定";
 
 
-  const d = day();
+  const d =
+    day();
 
 
   const st =
@@ -2138,7 +2628,8 @@ function render(){
 
   document.getElementById(
     "recordStatus"
-  ).textContent=st;
+  ).textContent =
+    st;
 
 
   const homeConfirmed =
@@ -2166,7 +2657,8 @@ function render(){
   document.getElementById(
     "homeStatus"
   ).className =
-    "pill " +
+    "pill "
+    +
     (
       homeConfirmed
         ? "ok"
@@ -2176,11 +2668,11 @@ function render(){
 
   validate(mode);
 
-  renderCategories();
-
   renderRecordCategories();
 
   renderClock();
+
+  renderLegend();
 
   updateDuration();
 
@@ -2193,7 +2685,9 @@ function render(){
    Validation
    ========================= */
 
-function validate(which=mode){
+function validate(
+  which=mode
+){
 
   let r =
     records(which);
@@ -2201,15 +2695,17 @@ function validate(which=mode){
   let total=0;
 
 
-  r.forEach(x=>{
+  r.forEach(
+    x=>{
 
-    total +=
-      dur(
-        mins(x.start),
-        mins(x.end)
-      );
+      total +=
+        dur(
+          mins(x.start),
+          mins(x.end)
+        );
 
-  });
+    }
+  );
 
 
   let missing =
@@ -2252,10 +2748,13 @@ function validate(which=mode){
    Markdown
    ========================= */
 
-function md(which){
+function md(
+  which
+){
 
   let list =
     day()[which];
+
 
   let title =
     which==="schedule"
@@ -2266,17 +2765,23 @@ function md(which){
   let sums={};
 
 
-  list.forEach(x=>{
+  list.forEach(
+    x=>{
 
-    sums[x.category] =
-      (sums[x.category]||0)
-      +
-      dur(
-        mins(x.start),
-        mins(x.end)
-      );
+      sums[x.category] =
+        (
+          sums[x.category]
+          ||
+          0
+        )
+        +
+        dur(
+          mins(x.start),
+          mins(x.end)
+        );
 
-  });
+    }
+  );
 
 
   return `
@@ -2305,7 +2810,8 @@ ${
 ${
   Object.entries(sums)
     .sort(
-      (a,b)=>b[1]-a[1]
+      (a,b)=>
+        b[1]-a[1]
     )
     .map(
       ([k,v])=>
@@ -2329,7 +2835,10 @@ function download(
 ){
 
   let a =
-    document.createElement("a");
+    document.createElement(
+      "a"
+    );
+
 
   a.href =
     URL.createObjectURL(
@@ -2339,9 +2848,13 @@ function download(
       )
     );
 
-  a.download=name;
+
+  a.download =
+    name;
+
 
   a.click();
+
 
   setTimeout(
     ()=>
@@ -2368,9 +2881,11 @@ function renderCategories(){
       .map(
         c=>
           `
+
           <div class="item">
 
             <span>
+
               ${esc(c)}
 
               ${
@@ -2384,7 +2899,9 @@ function renderCategories(){
             ${
               FIXED.includes(c)
                 ? ""
+
                 : `
+
                   <button
                     class="dangerbtn"
                     style="
@@ -2397,10 +2914,12 @@ function renderCategories(){
                     削除
 
                   </button>
+
                   `
             }
 
           </div>
+
           `
       )
       .join("");
@@ -2410,23 +2929,26 @@ function renderCategories(){
     .querySelectorAll(
       "[data-del]"
     )
-    .forEach(button=>{
+    .forEach(
+      button=>{
 
-      button.onclick=()=>{
+        button.onclick=()=>{
 
-        db.categories =
-          db.categories.filter(
-            c =>
-              c!==button.dataset.del
-          );
+          db.categories =
+            db.categories.filter(
+              c=>
+                c!==button.dataset.del
+            );
 
-        save();
 
-        render();
+          save();
 
-      };
+          render();
 
-    });
+        };
+
+      }
+    );
 
 }
 
@@ -2435,12 +2957,16 @@ function renderCategories(){
    Screen
    ========================= */
 
-function switchScreen(id){
+function switchScreen(
+  id
+){
 
   document
-    .querySelectorAll(".screen")
+    .querySelectorAll(
+      ".screen"
+    )
     .forEach(
-      x =>
+      x=>
         x.classList.remove(
           "active"
         )
@@ -2449,7 +2975,9 @@ function switchScreen(id){
 
   document
     .getElementById(id)
-    .classList.add("active");
+    .classList.add(
+      "active"
+    );
 
 
   document
@@ -2457,7 +2985,7 @@ function switchScreen(id){
       ".bottom button"
     )
     .forEach(
-      x =>
+      x=>
         x.classList.toggle(
           "active",
           x.dataset.screen===id
@@ -2479,9 +3007,9 @@ document
     ".bottom button"
   )
   .forEach(
-    b =>
+    b=>
       b.onclick =
-        () =>
+        ()=>
           switchScreen(
             b.dataset.screen
           )
@@ -2498,18 +3026,23 @@ document.getElementById(
 
   let d =
     new Date(
-      selectedDate+"T12:00:00"
+      selectedDate+
+      "T12:00:00"
     );
+
 
   d.setDate(
     d.getDate()-1
   );
 
+
   selectedDate =
     localDateString(d);
 
+
   dateEl.value =
     selectedDate;
+
 
   clearTimeEditor();
 
@@ -2524,18 +3057,23 @@ document.getElementById(
 
   let d =
     new Date(
-      selectedDate+"T12:00:00"
+      selectedDate+
+      "T12:00:00"
     );
+
 
   d.setDate(
     d.getDate()+1
   );
 
+
   selectedDate =
     localDateString(d);
 
+
   dateEl.value =
     selectedDate;
+
 
   clearTimeEditor();
 
@@ -2564,7 +3102,8 @@ document.getElementById(
   "homeSchedule"
 ).onclick=()=>{
 
-  homeMode="schedule";
+  homeMode =
+    "schedule";
 
   render();
 
@@ -2575,7 +3114,8 @@ document.getElementById(
   "homeActivity"
 ).onclick=()=>{
 
-  homeMode="activity";
+  homeMode =
+    "activity";
 
   render();
 
@@ -2590,7 +3130,8 @@ document.getElementById(
   "recSchedule"
 ).onclick=()=>{
 
-  mode="schedule";
+  mode =
+    "schedule";
 
   clearTimeEditor();
 
@@ -2603,7 +3144,8 @@ document.getElementById(
   "recActivity"
 ).onclick=()=>{
 
-  mode="activity";
+  mode =
+    "activity";
 
   clearTimeEditor();
 
@@ -2621,8 +3163,11 @@ document.getElementById(
 ).addEventListener(
   "change",
   ()=>{
+
     updateDuration();
+
     updateCategoryState();
+
   }
 );
 
@@ -2632,8 +3177,11 @@ document.getElementById(
 ).addEventListener(
   "change",
   ()=>{
+
     updateDuration();
+
     updateCategoryState();
+
   }
 );
 
@@ -2646,66 +3194,75 @@ document
   .querySelectorAll(
     "[data-duration]"
   )
-  .forEach(button=>{
+  .forEach(
+    button=>{
 
-    button.onclick=()=>{
+      button.onclick=()=>{
 
-      const duration =
-        Number(
-          button.dataset.duration
-        );
-
-
-      let start =
-        document.getElementById(
-          "startTime"
-        ).value;
-
-
-      if(!start){
-
-        const now =
-          new Date();
-
-        const current =
-          now.getHours()*60
-          +
-          now.getMinutes();
-
-        start =
-          hh(
-            roundTo15(current)
+        const duration =
+          Number(
+            button.dataset.duration
           );
 
+
+        let start =
+          document.getElementById(
+            "startTime"
+          ).value;
+
+
+        if(!start){
+
+          const now =
+            new Date();
+
+
+          const current =
+            now.getHours()*60
+            +
+            now.getMinutes();
+
+
+          start =
+            hh(
+              roundTo15(
+                current
+              )
+            );
+
+
+          document.getElementById(
+            "startTime"
+          ).value =
+            start;
+
+        }
+
+
+        const end =
+          (
+            mins(start)
+            +
+            duration
+          )
+          %
+          1440;
+
+
         document.getElementById(
-          "startTime"
+          "endTime"
         ).value =
-          start;
-
-      }
+          hh(end);
 
 
-      const end =
-        (
-          mins(start)
-          +
-          duration
-        ) % 1440;
+        updateDuration();
 
+        updateCategoryState();
 
-      document.getElementById(
-        "endTime"
-      ).value =
-        hh(end);
+      };
 
-
-      updateDuration();
-
-      updateCategoryState();
-
-    };
-
-  });
+    }
+  );
 
 
 /* =========================
@@ -2717,6 +3274,19 @@ document.getElementById(
 ).onclick=()=>{
 
   setCurrentStart();
+
+};
+
+
+/*
+ * 追加：
+ * 現在時刻を終了に設定
+ */
+document.getElementById(
+  "setNowEndBtn"
+).onclick=()=>{
+
+  setCurrentEnd();
 
 };
 
@@ -2788,6 +3358,7 @@ document.getElementById(
   let v =
     validate(mode);
 
+
   let label =
     mode==="schedule"
       ? "予定"
@@ -2808,14 +3379,18 @@ document.getElementById(
   }
 
 
-  day().confirmed[mode]=true;
+  day().confirmed[mode] =
+    true;
 
-  day().md[mode]=
+
+  day().md[mode] =
     md(mode);
+
 
   save();
 
   render();
+
 
   alert(
     `${label}を確定しました．`
@@ -2841,19 +3416,27 @@ document.getElementById(
     );
 
 
-  if(what==="予定"){
+  if(
+    what==="予定"
+  ){
 
-    day().confirmed.schedule=false;
+    day().confirmed.schedule =
+      false;
 
-    mode="schedule";
+    mode =
+      "schedule";
 
   }
 
-  else if(what==="行動"){
+  else if(
+    what==="行動"
+  ){
 
-    day().confirmed.activity=false;
+    day().confirmed.activity =
+      false;
 
-    mode="activity";
+    mode =
+      "activity";
 
   }
 
@@ -2895,7 +3478,8 @@ document.getElementById(
   download(
     `schedule_${selectedDate}.md`,
     day().md.schedule
-      || md("schedule")
+      ||
+      md("schedule")
   );
 
 };
@@ -2921,7 +3505,8 @@ document.getElementById(
   download(
     `activity_${selectedDate}.md`,
     day().md.activity
-      || md("activity")
+      ||
+      md("activity")
   );
 
 };
@@ -2951,9 +3536,11 @@ document.getElementById(
   let t =
     md(mode);
 
+
   try{
 
     await navigator.clipboard.writeText(t);
+
 
     document.getElementById(
       "exportMsg"
