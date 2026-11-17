@@ -1832,7 +1832,7 @@ function svgClock(list){
           A ${r1} ${r1} 0 ${large} 0 ${q1[0]} ${q1[1]}
           Z
         "
-        fill="${palette[category]||"#d1d5db"}"
+        fill="${category==="__preview__"?"#3b82f6":(palette[category]||"#d1d5db")}"
         opacity=".86"
       />
     `;
@@ -1841,6 +1841,8 @@ function svgClock(list){
 
 
   let parts=[];
+
+  let nums=[];
 
 
   /* 24時間目盛 */
@@ -1891,7 +1893,7 @@ function svgClock(list){
         inner-16
       );
 
-    parts.push(`
+    nums.push(`
       <text
         x="${p[0]}"
         y="${p[1]+4}"
@@ -1958,6 +1960,8 @@ function svgClock(list){
           :"記録"
         }
       </text>
+
+      ${nums.join("")}
 
     </svg>
   `;
@@ -2036,7 +2040,7 @@ function renderClock(){
             ? clockDrag.start+30
             : clockDrag.end
           ),
-          category:null
+          category:"__preview__"
         }
       ]
     : recList;
