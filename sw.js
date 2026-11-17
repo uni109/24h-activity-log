@@ -1,6 +1,6 @@
 /* 更新を確実に反映させるため，ネットワーク優先・失敗時のみキャッシュを使う．
    キャッシュ対象のファイルを変えたら CACHE の番号を上げる． */
-const CACHE="activity-log-v3";
+const CACHE="activity-log-v4";
 const ASSETS=[
   "./",
   "./index.html",

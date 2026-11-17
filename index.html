@@ -546,6 +546,11 @@ textarea{
   margin-bottom:8px
 }
 
+#recordClock,
+#recordClock svg{
+  touch-action:none
+}
+
 .fab{
   position:fixed;
   right:16px;
@@ -708,6 +713,10 @@ textarea{
 
     <div class="clockwrap">
       <div id="recordClock" class="clock"></div>
+    </div>
+
+    <div class="small" style="text-align:center">
+      円グラフをタッチ／ドラッグしても時間を入力できます
     </div>
 
     <div id="recordLegend" class="legend"></div>
@@ -1031,6 +1040,7 @@ let mode="schedule";
 let homeMode="schedule";
 let pending=null;
 let tweetFilter="all";
+let clockDrag=null;
 let diaryTimer=null;
 
 
@@ -2011,11 +2021,32 @@ function renderClock(){
     );
 
 
+  const recList=
+    records(mode);
+
+
+  const clockList=
+    clockDrag
+    ? [
+        ...recList,
+        {
+          start:hh(clockDrag.start),
+          end:hh(
+            clockDrag.end===clockDrag.start
+            ? clockDrag.start+30
+            : clockDrag.end
+          ),
+          category:null
+        }
+      ]
+    : recList;
+
+
   document.getElementById(
     "recordClock"
   ).innerHTML=
     svgClock(
-      records(mode)
+      clockList
     );
 
 
@@ -3301,6 +3332,175 @@ document.getElementById(
   render();
 
 };
+
+
+/* =========================
+   円グラフのタッチ／ドラッグ入力
+========================= */
+
+/* 時計の座標（viewBox 340・中心170）から分を求める．5分刻みに丸める */
+function minutesFromPoint(clientX,clientY,rect){
+
+  const x=
+    (clientX-rect.left)
+    /rect.width*340;
+
+  const y=
+    (clientY-rect.top)
+    /rect.height*340;
+
+
+  let ang=
+    Math.atan2(y-170,x-170)
+    +Math.PI/2;
+
+  if(ang<0)
+    ang+=Math.PI*2;
+
+
+  const m=
+    Math.round(
+      ang/(Math.PI*2)*1440/5
+    )*5;
+
+
+  return ((m%1440)+1440)%1440;
+
+}
+
+
+function clockMinutesFromEvent(e){
+
+  const svg=
+    document
+      .getElementById("recordClock")
+      .querySelector("svg");
+
+  if(!svg)
+    return null;
+
+
+  return minutesFromPoint(
+    e.clientX,
+    e.clientY,
+    svg.getBoundingClientRect()
+  );
+
+}
+
+
+function applyClockDrag(){
+
+  document.getElementById(
+    "startTime"
+  ).value=
+    hh(clockDrag.start);
+
+
+  document.getElementById(
+    "endTime"
+  ).value=
+    hh(
+      clockDrag.end===clockDrag.start
+      ? clockDrag.start+30
+      : clockDrag.end
+    );
+
+
+  renderClock();
+
+}
+
+
+const recordClockEl=
+  document.getElementById(
+    "recordClock"
+  );
+
+
+recordClockEl.addEventListener(
+  "pointerdown",
+  e=>{
+
+    const m=
+      clockMinutesFromEvent(e);
+
+    if(m===null)
+      return;
+
+
+    clockDrag={
+      start:m,
+      end:m
+    };
+
+
+    recordClockEl
+      .setPointerCapture(
+        e.pointerId
+      );
+
+
+    applyClockDrag();
+
+
+    e.preventDefault();
+
+  }
+);
+
+
+recordClockEl.addEventListener(
+  "pointermove",
+  e=>{
+
+    if(!clockDrag)
+      return;
+
+
+    const m=
+      clockMinutesFromEvent(e);
+
+    if(m===null)
+      return;
+
+
+    clockDrag.end=m;
+
+
+    applyClockDrag();
+
+  }
+);
+
+
+function endClockDrag(){
+
+  if(!clockDrag)
+    return;
+
+
+  applyClockDrag();
+
+
+  clockDrag=null;
+
+
+  renderClock();
+
+}
+
+
+recordClockEl.addEventListener(
+  "pointerup",
+  endClockDrag
+);
+
+
+recordClockEl.addEventListener(
+  "pointercancel",
+  endClockDrag
+);
 
 
 /* =========================
