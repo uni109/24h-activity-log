@@ -400,7 +400,7 @@ main{
   border-top:1px solid var(--line);
   padding:8px max(12px,calc((100vw - 560px)/2 + 12px));
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(4,1fr);
   gap:5px;
   z-index:10
 }
@@ -521,6 +521,88 @@ input[type=text]{
   line-height:1.6
 }
 
+/* 日記・つぶやき */
+
+textarea{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:10px 11px;
+  font-size:15px;
+  font-family:inherit;
+  line-height:1.55;
+  resize:none;
+  background:white
+}
+
+#diaryText{
+  min-height:96px
+}
+
+.diary-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:8px
+}
+
+.fab{
+  position:fixed;
+  right:16px;
+  bottom:92px;
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  border:0;
+  background:var(--accent);
+  color:#fff;
+  font-size:22px;
+  box-shadow:0 4px 14px rgba(0,0,0,.25);
+  z-index:20
+}
+
+.tweet-item{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px 11px
+}
+
+.tweet-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:4px
+}
+
+.tweet-del{
+  border:0;
+  background:#fee2e2;
+  color:#991b1b;
+  border-radius:8px;
+  height:26px;
+  padding:0 9px;
+  font-size:11px;
+  font-weight:650
+}
+
+.tweet-text{
+  font-size:14px;
+  line-height:1.55;
+  word-break:break-word
+}
+
+.home-tweet{
+  display:flex;
+  gap:9px;
+  font-size:13px;
+  padding:5px 0;
+  border-bottom:1px dashed var(--line)
+}
+
+.home-tweet:last-child{
+  border-bottom:0
+}
+
 @media(max-width:380px){
   .legend{
     grid-template-columns:1fr
@@ -580,6 +662,26 @@ input[type=text]{
     <b>タイムライン</b>
     <div id="homeTimeline" class="timeline" style="margin-top:10px"></div>
     <div id="homeSummary" class="sum"></div>
+  </div>
+
+  <div class="card" id="homeTweetsCard" style="display:none">
+    <b>その日のつぶやき</b>
+    <div id="homeTweets" style="margin-top:6px"></div>
+  </div>
+
+  <div class="card">
+
+    <div class="diary-head">
+      <b>日記</b>
+      <span id="diarySaved" class="small"></span>
+    </div>
+
+    <textarea
+      id="diaryText"
+      rows="4"
+      placeholder="今日のこと，思ったことを自由に"
+    ></textarea>
+
   </div>
 
 </section>
@@ -688,6 +790,53 @@ input[type=text]{
 </section>
 
 
+<!-- つぶやき -->
+
+<section id="tweets" class="screen">
+
+  <div class="card">
+
+    <div class="status">
+      <b>つぶやき</b>
+      <span class="small">自分だけのタイムライン</span>
+    </div>
+
+    <textarea
+      id="tweetText"
+      rows="3"
+      placeholder="いま思ったことを一言"
+    ></textarea>
+
+    <div
+      class="small"
+      id="tweetCount"
+      style="text-align:right;margin-top:4px"
+    >0文字</div>
+
+    <button
+      class="primary"
+      id="postTweet"
+      style="margin-top:8px"
+    >
+      投稿する
+    </button>
+
+  </div>
+
+  <div class="card">
+
+    <div class="switch">
+      <button id="tweetAll" class="active">すべて</button>
+      <button id="tweetDay">選択日</button>
+    </div>
+
+    <div id="tweetList" class="list" style="margin-top:10px"></div>
+
+  </div>
+
+</section>
+
+
 <!-- データ -->
 
 <section id="data" class="screen">
@@ -707,7 +856,12 @@ input[type=text]{
     </div>
 
     <div class="actions">
-      <button class="secondary" id="exportJson">JSONバックアップ</button>
+      <button class="primary" id="exportDay">1日まとめMD</button>
+      <button class="secondary" id="exportTweets">ツイートMD</button>
+    </div>
+
+    <div class="actions">
+      <button class="secondary" id="exportJson">全データJSONバックアップ</button>
       <button class="secondary" id="copyMd">Markdownをコピー</button>
     </div>
 
@@ -753,12 +907,22 @@ input[type=text]{
     記録
   </button>
 
+  <button data-screen="tweets">
+    <span class="ico">✎</span>
+    つぶやき
+  </button>
+
   <button data-screen="data">
     <span class="ico">☷</span>
     データ
   </button>
 
 </nav>
+
+
+<!-- クイック投稿ボタン -->
+
+<button id="fab" class="fab" aria-label="つぶやきを投稿">✎</button>
 
 
 <!-- カテゴリ選択モーダル -->
@@ -770,6 +934,30 @@ input[type=text]{
     <h3 id="modalTitle">カテゴリを選択</h3>
 
     <div id="catPick" class="catpick"></div>
+
+    <div id="tweetSheet" style="display:none">
+
+      <textarea
+        id="quickTweetText"
+        rows="4"
+        placeholder="いま思ったことを一言"
+      ></textarea>
+
+      <div
+        class="small"
+        id="quickTweetCount"
+        style="text-align:right;margin-top:4px"
+      >0文字</div>
+
+      <button
+        class="primary"
+        id="quickPost"
+        style="margin-top:8px"
+      >
+        投稿する
+      </button>
+
+    </div>
 
     <button
       class="secondary"
@@ -810,7 +998,8 @@ let db=JSON.parse(
     "バイト",
     "その他"
   ],
-  days:{}
+  days:{},
+  tweets:[]
 };
 
 const KEY="activity_logger_v1";
@@ -841,6 +1030,8 @@ dateEl.value=selectedDate;
 let mode="schedule";
 let homeMode="schedule";
 let pending=null;
+let tweetFilter="all";
+let diaryTimer=null;
 
 
 /* =========================
@@ -850,6 +1041,17 @@ let pending=null;
 function save(){
   localStorage.setItem(KEY,JSON.stringify(db));
 }
+
+/* 既存データの正規化（不足分だけを補い，既存の記録には触らない） */
+function normalizeDb(){
+
+  if(!Array.isArray(db.tweets))
+    db.tweets=[];
+
+}
+
+normalizeDb();
+save();
 
 function day(){
 
@@ -865,7 +1067,20 @@ function day(){
       md:{
         schedule:"",
         activity:""
+      },
+      diary:{
+        text:"",
+        updatedAt:null
       }
+    };
+
+  }
+
+  if(!db.days[selectedDate].diary){
+
+    db.days[selectedDate].diary={
+      text:"",
+      updatedAt:null
     };
 
   }
@@ -912,6 +1127,380 @@ function fmtDur(x){
 function records(which=mode){
 
   return day()[which]||[];
+}
+
+
+/* =========================
+   日記
+========================= */
+
+function updateDiarySavedLabel(){
+
+  const u=day().diary.updatedAt;
+
+  document.getElementById(
+    "diarySaved"
+  ).textContent=
+    u
+    ? `保存済み ${tsTime(u)}`
+    : "";
+
+}
+
+function fitDiary(){
+
+  const ta=document.getElementById(
+    "diaryText"
+  );
+
+  ta.style.height="auto";
+
+  ta.style.height=
+    ta.scrollHeight+"px";
+
+}
+
+function saveDiary(){
+
+  const ta=document.getElementById(
+    "diaryText"
+  );
+
+  const d=day();
+
+  if(ta.value===d.diary.text){
+
+    updateDiarySavedLabel();
+
+    return;
+
+  }
+
+  d.diary.text=ta.value;
+
+  d.diary.updatedAt=
+    new Date().toISOString();
+
+  save();
+
+  updateDiarySavedLabel();
+
+}
+
+function flushDiary(){
+
+  if(diaryTimer){
+
+    clearTimeout(diaryTimer);
+
+    diaryTimer=null;
+
+  }
+
+  saveDiary();
+
+}
+
+
+/* =========================
+   ツイート
+========================= */
+
+function tsTime(ts){
+
+  const d=new Date(ts);
+
+  return String(d.getHours()).padStart(2,"0")
+    +":"
+    +String(d.getMinutes()).padStart(2,"0");
+
+}
+
+function tsLabel(ts){
+
+  const d=new Date(ts);
+
+  return `${d.getMonth()+1}/${d.getDate()} ${tsTime(ts)}`;
+
+}
+
+/* 投稿時刻のカレンダー日（端末のローカル日付） */
+function tweetDate(t){
+
+  return ymd(new Date(t.ts));
+
+}
+
+function tweetsOn(dateStr){
+
+  return db.tweets.filter(
+    t=>tweetDate(t)===dateStr
+  );
+
+}
+
+function addTweet(text){
+
+  text=(text||"").trim();
+
+  if(!text)
+    return false;
+
+  db.tweets.push({
+
+    id:
+      "t"
+      +Date.now().toString(36)
+      +Math.random().toString(36).slice(2,7),
+
+    ts:new Date().toISOString(),
+
+    text
+
+  });
+
+  save();
+
+  return true;
+
+}
+
+function deleteTweet(id){
+
+  db.tweets=
+    db.tweets.filter(
+      t=>t.id!==id
+    );
+
+  save();
+
+  render();
+
+}
+
+function updateTweetCount(){
+
+  document.getElementById(
+    "tweetCount"
+  ).textContent=
+    `${document.getElementById("tweetText").value.length}文字`;
+
+}
+
+function updateQuickTweetCount(){
+
+  document.getElementById(
+    "quickTweetCount"
+  ).textContent=
+    `${document.getElementById("quickTweetText").value.length}文字`;
+
+}
+
+function renderTweets(){
+
+  document.getElementById(
+    "tweetAll"
+  ).classList.toggle(
+    "active",
+    tweetFilter==="all"
+  );
+
+
+  document.getElementById(
+    "tweetDay"
+  ).classList.toggle(
+    "active",
+    tweetFilter==="day"
+  );
+
+
+  let list=
+    [...db.tweets].sort(
+      (a,b)=>new Date(b.ts)-new Date(a.ts)
+    );
+
+
+  if(tweetFilter==="day"){
+
+    list=list.filter(
+      t=>tweetDate(t)===selectedDate
+    );
+
+  }
+
+
+  const el=document.getElementById(
+    "tweetList"
+  );
+
+
+  if(!list.length){
+
+    el.innerHTML=
+      `<div class="small">${
+        tweetFilter==="day"
+        ?"この日のつぶやきはまだありません．"
+        :"まだつぶやきがありません．"
+      }</div>`;
+
+  }else{
+
+    el.innerHTML=
+      list.map(t=>`
+
+        <div class="tweet-item">
+
+          <div class="tweet-head">
+
+            <span class="small">
+              ${tsLabel(t.ts)}
+            </span>
+
+            <button
+              class="tweet-del"
+              data-tweet-del="${t.id}"
+            >
+              削除
+            </button>
+
+          </div>
+
+          <div class="tweet-text">${esc(t.text).replaceAll("\n","<br>")}</div>
+
+        </div>
+
+      `).join("");
+
+
+    el.querySelectorAll(
+      "[data-tweet-del]"
+    ).forEach(b=>{
+
+      b.onclick=()=>{
+
+        if(
+          confirm(
+            "このつぶやきを削除しますか？"
+          )
+        ){
+
+          deleteTweet(
+            b.dataset.tweetDel
+          );
+
+        }
+
+      };
+
+    });
+
+  }
+
+
+  /* ホーム：その日のつぶやき（時刻順） */
+
+  const todays=
+    tweetsOn(selectedDate)
+      .sort(
+        (a,b)=>new Date(a.ts)-new Date(b.ts)
+      );
+
+
+  const card=document.getElementById(
+    "homeTweetsCard"
+  );
+
+
+  if(!todays.length){
+
+    card.style.display="none";
+
+  }else{
+
+    card.style.display="";
+
+    document.getElementById(
+      "homeTweets"
+    ).innerHTML=
+      todays.map(t=>`
+
+        <div class="home-tweet">
+
+          <span class="small">
+            ${tsTime(t.ts)}
+          </span>
+
+          <span>${esc(t.text).replaceAll("\n","<br>")}</span>
+
+        </div>
+
+      `).join("");
+
+  }
+
+}
+
+
+/* =========================
+   投稿シート（モーダル流用）
+========================= */
+
+function closeModalSheet(){
+
+  document.getElementById(
+    "modal"
+  ).classList.remove("open");
+
+
+  document.getElementById(
+    "tweetSheet"
+  ).style.display="none";
+
+
+  document.getElementById(
+    "catPick"
+  ).style.display="";
+
+
+  document.getElementById(
+    "modalTitle"
+  ).textContent="カテゴリを選択";
+
+}
+
+function openTweetSheet(){
+
+  document.getElementById(
+    "modalTitle"
+  ).textContent="つぶやきを投稿";
+
+
+  document.getElementById(
+    "catPick"
+  ).style.display="none";
+
+
+  document.getElementById(
+    "tweetSheet"
+  ).style.display="";
+
+
+  const ta=document.getElementById(
+    "quickTweetText"
+  );
+
+  ta.value="";
+
+  updateQuickTweetCount();
+
+
+  document.getElementById(
+    "modal"
+  ).classList.add("open");
+
+
+  ta.focus();
+
 }
 
 
@@ -1654,6 +2243,28 @@ function render(){
 
   renderCategories();
 
+  renderTweets();
+
+
+  /* 日記：編集中でなければ選択日の内容を反映 */
+
+  const diaryTa=document.getElementById(
+    "diaryText"
+  );
+
+  if(
+    document.activeElement!==diaryTa
+    && diaryTa.value!==day().diary.text
+  ){
+
+    diaryTa.value=day().diary.text;
+
+    fitDiary();
+
+  }
+
+  updateDiarySavedLabel();
+
   renderClock();
 
 }
@@ -1712,6 +2323,21 @@ function clearTimeInput(){
 ========================= */
 
 function openCats(){
+
+  document.getElementById(
+    "tweetSheet"
+  ).style.display="none";
+
+
+  document.getElementById(
+    "catPick"
+  ).style.display="";
+
+
+  document.getElementById(
+    "modalTitle"
+  ).textContent="カテゴリを選択";
+
 
   document.getElementById(
     "catPick"
@@ -1907,6 +2533,108 @@ function md(which){
 
 
 /* =========================
+   まとめMarkdown（出力時に生成）
+========================= */
+
+/* md() の見出し行（# Schedule — 日付）を除いた本文 */
+function mdSection(which){
+
+  return md(which)
+    .replace(/^\s*# [^\n]*\n/,"")
+    .trim();
+
+}
+
+function daySummaryMd(){
+
+  const d=day();
+
+  const diaryText=
+    (d.diary.text||"").trim();
+
+  const tw=
+    tweetsOn(selectedDate)
+      .sort(
+        (a,b)=>new Date(a.ts)-new Date(b.ts)
+      );
+
+
+  let out=
+`# ${selectedDate}
+
+## Schedule
+
+${mdSection("schedule")}
+
+## Activity
+
+${mdSection("activity")}
+
+## Diary
+
+${diaryText||"（なし）"}
+
+## Tweets
+
+`;
+
+
+  out+=
+    tw.length
+    ? tw.map(
+        t=>
+          `- ${tsTime(t.ts)} ${t.text.replaceAll("\n"," ")}`
+      ).join("\n")
+    : "（なし）";
+
+
+  out+="\n";
+
+  return out;
+
+}
+
+function tweetsMd(){
+
+  const sorted=
+    [...db.tweets].sort(
+      (a,b)=>new Date(a.ts)-new Date(b.ts)
+    );
+
+
+  let out="# Tweets\n";
+
+  let cur="";
+
+
+  for(const t of sorted){
+
+    const d=tweetDate(t);
+
+    if(d!==cur){
+
+      cur=d;
+
+      out+=`\n## ${d}\n\n`;
+
+    }
+
+    out+=
+      `- ${tsTime(t.ts)} ${t.text.replaceAll("\n"," ")}\n`;
+
+  }
+
+
+  if(!sorted.length)
+    out+="\n（なし）\n";
+
+
+  return out;
+
+}
+
+
+/* =========================
    ダウンロード
 ========================= */
 
@@ -2011,6 +2739,8 @@ function renderCategories(){
 
 function switchScreen(id){
 
+  flushDiary();
+
   document
     .querySelectorAll(".screen")
     .forEach(
@@ -2058,6 +2788,8 @@ document.getElementById(
   "prev"
 ).onclick=()=>{
 
+  flushDiary();
+
   selectedDate=
     shiftDate(selectedDate,-1);
 
@@ -2072,6 +2804,8 @@ document.getElementById(
   "next"
 ).onclick=()=>{
 
+  flushDiary();
+
   selectedDate=
     shiftDate(selectedDate,+1);
 
@@ -2083,6 +2817,8 @@ document.getElementById(
 
 
 dateEl.onchange=()=>{
+
+  flushDiary();
 
   selectedDate=
     dateEl.value;
@@ -2191,9 +2927,7 @@ document.getElementById(
 
   pending=null;
 
-  document.getElementById(
-    "modal"
-  ).classList.remove("open");
+  closeModalSheet();
 
 };
 
@@ -2336,14 +3070,21 @@ document.getElementById(
 ).onclick=()=>{
 
   download(
-    `activity_${selectedDate}.json`,
+    `activity_log_backup_${ymd(new Date())}.json`,
     JSON.stringify(
-      day(),
+      db,
       null,
       2
     ),
     "application/json"
   );
+
+  document.getElementById(
+    "exportMsg"
+  ).innerHTML=
+    `<div class="success">
+      全データをJSONで出力しました．
+     </div>`;
 
 };
 
@@ -2363,6 +3104,48 @@ document.getElementById(
   ).innerHTML=
     `<div class="success">
       Markdownをコピーしました．
+     </div>`;
+
+};
+
+
+/* 1日まとめMD */
+
+document.getElementById(
+  "exportDay"
+).onclick=()=>{
+
+  download(
+    `day_${selectedDate}.md`,
+    daySummaryMd()
+  );
+
+  document.getElementById(
+    "exportMsg"
+  ).innerHTML=
+    `<div class="success">
+      1日まとめMarkdownを出力しました．
+     </div>`;
+
+};
+
+
+/* ツイート全期間MD */
+
+document.getElementById(
+  "exportTweets"
+).onclick=()=>{
+
+  download(
+    "tweets.md",
+    tweetsMd()
+  );
+
+  document.getElementById(
+    "exportMsg"
+  ).innerHTML=
+    `<div class="success">
+      ツイートのMarkdownを出力しました．
      </div>`;
 
 };
@@ -2394,6 +3177,126 @@ document.getElementById(
 
 
   save();
+
+  render();
+
+};
+
+
+/* =========================
+   日記・ツイートのイベント
+========================= */
+
+/* 日記：自動保存（デバウンス＋フォーカス外れで保存） */
+
+const diaryTa=document.getElementById(
+  "diaryText"
+);
+
+diaryTa.oninput=()=>{
+
+  fitDiary();
+
+  if(diaryTimer)
+    clearTimeout(diaryTimer);
+
+  diaryTimer=
+    setTimeout(saveDiary,600);
+
+};
+
+diaryTa.onblur=flushDiary;
+
+
+/* ツイート画面：投稿 */
+
+document.getElementById(
+  "tweetText"
+).oninput=updateTweetCount;
+
+
+document.getElementById(
+  "postTweet"
+).onclick=()=>{
+
+  const ta=document.getElementById(
+    "tweetText"
+  );
+
+  if(!addTweet(ta.value)){
+
+    alert(
+      "本文を入力してください．"
+    );
+
+    return;
+
+  }
+
+  ta.value="";
+
+  updateTweetCount();
+
+  render();
+
+};
+
+
+/* ツイート画面：表示切替 */
+
+document.getElementById(
+  "tweetAll"
+).onclick=()=>{
+
+  tweetFilter="all";
+
+  render();
+
+};
+
+
+document.getElementById(
+  "tweetDay"
+).onclick=()=>{
+
+  tweetFilter="day";
+
+  render();
+
+};
+
+
+/* クイック投稿 */
+
+document.getElementById(
+  "fab"
+).onclick=openTweetSheet;
+
+
+document.getElementById(
+  "quickTweetText"
+).oninput=updateQuickTweetCount;
+
+
+document.getElementById(
+  "quickPost"
+).onclick=()=>{
+
+  const ta=document.getElementById(
+    "quickTweetText"
+  );
+
+  if(!addTweet(ta.value)){
+
+    alert(
+      "本文を入力してください．"
+    );
+
+    return;
+
+  }
+
+  closeModalSheet();
 
   render();
 
